@@ -9,28 +9,10 @@
 
 set -eou pipefail
 
-APT_REPO="1W77d5naX4qQfYYg6HnF_lT2z53Q5w8AJ"
-GD_CODE=`wget -nv --save-cookies cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$APT_REPO" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/Code: \1\n/p' | tail -c 5`
-
-echo "General config"
-
-sudo passwd -l root    # lock the root account from direct login
-sudo sed -i.old /etc/ssh/sshd_config -e'/PermitRootLogin/s/yes/no/'    # configure sshd to not allow root
-sudo service ssh restart
-
-sudo -s
-
-echo "Deleting default dirs"
-
-cd ~
-rm -rf Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos
-
-echo "Replacing Next Thing Co. repos in source lists"
-
-sudo sed -i '/deb http:\/\/opensource.nextthing.co\/chip\/debian\/pocketchip jessie main/d' /etc/apt/sources.list
-sudo sed -i '/deb http:\/\/opensource.nextthing.co\/chip\/debian\/repo jessie main/d' /etc/apt/sources.list
-
-if [ "$1" == "local-apt" ]; then
+# Function declaration.
+function local_sources() {
+    APT_REPO="1W77d5naX4qQfYYg6HnF_lT2z53Q5w8AJ"
+    GD_CODE=`wget -nv --save-cookies cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$APT_REPO" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/Code: \1\n/p' | tail -c 5`
 
     sudo apt install -y proftpd-basic
     sudo chown -R chip /srv/ftp
@@ -44,13 +26,37 @@ if [ "$1" == "local-apt" ]; then
     sudo echo -e "<Anonymous ~ftp>\n\tUser ftp\n\tGroup nogroup\n\tUserAlias anonymous ftp\n\tRequireValidShell off\n\t<Directory *>\n\t\t<Limit WRITE>\n\t\t\tDenyAll\n\t\t</Limit>\n\t</Directory>\n</Anonymous>" >> /etc/proftpd/conf.d/anonymous.conf 
     sudo service proftpd restart
     cd ~
+}
 
-else
-
+function remote_sources() {
     echo "deb http://chip.jfpossibilities.com/chip/debian/repo jessie main" | sudo tee -a /etc/apt/sources.list
     echo "deb http://chip.jfpossibilities.com/chip/debian/pocketchip jessie main" | sudo tee -a /etc/apt/sources.list
+}
 
-fi
+echo "Deleting default dirs"
+
+cd ~
+rm -rf Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos
+
+echo "Remove power saving on Wi-Fi"
+
+sudo iw dev wlan0 set power_save off
+echo "iw dev wlan0 set power_save off" > wlan_pwr
+sudo mv wlan_pwr /etc/network/if-up.d/
+
+echo "Replacing Next Thing Co. repos in source lists"
+
+sudo sed -i '/deb http:\/\/opensource.nextthing.co\/chip\/debian\/pocketchip jessie main/d' /etc/apt/sources.list
+sudo sed -i '/deb http:\/\/opensource.nextthing.co\/chip\/debian\/repo jessie main/d' /etc/apt/sources.list
+
+while true; do
+    read -p "Do you want to store Next Thing Co. repos locally?[y/n]" answer
+    case $answer in
+        [Yy]* ) local_sources; break;;
+        [Nn]* ) remote_sources; break;;
+        * ) echo "Please answer yes or no.";
+    esac
+done
 
 echo "Updating the thing!!"
 
@@ -64,7 +70,14 @@ libxcursor-dev libxft-dev libxinerama-dev network-manager-dev iw bash-completion
 libi2c-dev libssl-dev xinput-calibrator ssh libsdl1.2-dev vim locales kbd \
 libsdl2-dev libboost-system-dev libboost-filesystem-dev libboost-date-time-dev \
 libfreeimage-dev libfreetype6-dev libeigen3-dev libcurl4-openssl-dev \
-libgl1-mesa-dev cmake pkg-config rsync
+libgl1-mesa-dev cmake pkg-config rsync minicom
+
+echo "General config"
+
+sudo passwd -l root    # lock the root account from direct login
+sudo sed -i.old /etc/ssh/sshd_config -e'/PermitRootLogin/s/yes/no/'    # configure sshd to not allow root
+sudo service ssh restart
+sudo usermod -a -G dialout $USER
 
 echo "Say bye to graphical mode!"
 
@@ -94,6 +107,8 @@ cd RetroArch/
 ./configure --enable-opengles --disable-oss --disable-ffmpeg --disable-vg \
 --disable-cg --enable-neon --enable-floathard --disable-wayland --enable-sdl \
 --disable-sdl2
+
+./configure   
 
 make
 sudo make install

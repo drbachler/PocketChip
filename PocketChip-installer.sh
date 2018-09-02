@@ -33,6 +33,16 @@ function remote_sources() {
     echo "deb http://chip.jfpossibilities.com/chip/debian/pocketchip jessie main" | sudo tee -a /etc/apt/sources.list
 }
 
+
+function kill_x() {
+    echo "Say bye to graphical mode!"
+
+    sudo systemctl set-default multi-user.target
+    mkdir ~/.local/share/keymaps
+    echo -e "keymaps 0-2,4-5,8,12\naltgr keycode  2 = F1\naltgr keycode  3 = F2\naltgr keycode  4 = F3\naltgr keycode  5 = F4\naltgr keycode  6 = F5\naltgr keycode  7 = F6\naltgr keycode  8 = F7\naltgr keycode  9 = F8\naltgr keycode 10 = F9\naltgr keycode 11 = F10\naltgr keycode 74 = F11\nshift keycode 74 = underscore\naltgr keycode 13 = F12\naltgr keycode 21 = braceleft\naltgr keycode 22 = braceright\naltgr keycode 23 = bracketleft\naltgr keycode 24 = bracketright\naltgr keycode 25 = bar\naltgr keycode 35 = less\naltgr keycode 36 = greater\naltgr keycode 37 = apostrophe\naltgr keycode 38 = quotedbl\naltgr keycode 48 = grave\naltgr keycode 49 = asciitilde\naltgr keycode 50 = colon\naltgr keycode 52 = semicolon\nshift keycode 52 = comma\naltgr keycode 53 = backslash\n" > ~/.local/share/keymaps/key_map
+    sudo loadkeys ~/.local/share/keymaps/key_map
+}
+
 echo "Deleting default dirs"
 
 cd ~
@@ -79,13 +89,6 @@ sudo sed -i.old /etc/ssh/sshd_config -e'/PermitRootLogin/s/yes/no/'    # configu
 sudo service ssh restart
 sudo usermod -a -G dialout $USER
 
-echo "Say bye to graphical mode!"
-
-sudo systemctl set-default multi-user.target
-mkdir ~/.local/share/keymaps
-echo -e "keymaps 0-2,4-5,8,12\naltgr keycode  2 = F1\naltgr keycode  3 = F2\naltgr keycode  4 = F3\naltgr keycode  5 = F4\naltgr keycode  6 = F5\naltgr keycode  7 = F6\naltgr keycode  8 = F7\naltgr keycode  9 = F8\naltgr keycode 10 = F9\naltgr keycode 11 = F10\naltgr keycode 74 = F11\nshift keycode 74 = underscore\naltgr keycode 13 = F12\naltgr keycode 21 = braceleft\naltgr keycode 22 = braceright\naltgr keycode 23 = bracketleft\naltgr keycode 24 = bracketright\naltgr keycode 25 = bar\naltgr keycode 35 = less\naltgr keycode 36 = greater\naltgr keycode 37 = apostrophe\naltgr keycode 38 = quotedbl\naltgr keycode 48 = grave\naltgr keycode 49 = asciitilde\naltgr keycode 50 = colon\naltgr keycode 52 = semicolon\nshift keycode 52 = comma\naltgr keycode 53 = backslash\n" > ~/.local/share/keymaps/key_map
-sudo loadkeys ~/.local/share/keymaps/key_map
-
 echo "Installing PocketHome"
 
 wget -O /tmp/pocket_home.deb https://github.com/igrigar/PocketChip/blob/master/pocket-home_0.0.8.9-1_armhf.deb?raw=true
@@ -98,6 +101,14 @@ echo "Reconfiguring locales"
 
 sudo dpkg-reconfigure locales           # if in the USA, select "en_US" locales.
 sudo dpkg-reconfigure tzdata            # select your timezone
+
+while true; do
+    read -p "Do you want to boot diirectly in text mode?[y/n]" answer
+    case $answer in
+        [Yy]* ) kill_x; break;;
+        * ) echo "Please answer yes or no.";
+    esac
+done
 
 echo "Installin Retro Arch"
 

@@ -43,6 +43,18 @@ function kill_x() {
     sudo loadkeys ~/.local/share/keymaps/key_map
 }
 
+function install_retroarch() {
+    echo "Installin Retro Arch"
+
+    git clone git://github.com/libretro/RetroArch.git
+    cd RetroArch/
+
+    ./configure --enable-sdl --disable-sdl2 --enable-floathard --enable-neon --disable-opengl --disable-vg --disable-egl --disable-pulse --disable-oss --disable-x11 --disable-wayland --disable-ffmpeg --disable-7zip --disable-libxml2 --disable-freetype
+
+    make
+    sudo make install
+}
+
 echo "Deleting default dirs"
 
 cd ~
@@ -80,7 +92,8 @@ libxcursor-dev libxft-dev libxinerama-dev network-manager-dev iw bash-completion
 libi2c-dev libssl-dev xinput-calibrator ssh libsdl1.2-dev vim locales kbd \
 libsdl2-dev libboost-system-dev libboost-filesystem-dev libboost-date-time-dev \
 libfreeimage-dev libfreetype6-dev libeigen3-dev libcurl4-openssl-dev \
-libgl1-mesa-dev cmake pkg-config rsync minicom
+libgl1-mesa-dev cmake pkg-config rsync minicom pulseaudio-module-bluetooth \
+blueman
 
 echo "General config"
 
@@ -88,6 +101,8 @@ sudo passwd -l root    # lock the root account from direct login
 sudo sed -i.old /etc/ssh/sshd_config -e'/PermitRootLogin/s/yes/no/'    # configure sshd to not allow root
 sudo service ssh restart
 sudo usermod -a -G dialout $USER
+sudo chown -R chip /rtc/minicom
+sudo sed -i 's/exit 0/sudo systemctl stop serial-getty@ttyS0\nexit 0/g' /etc/rc.local
 
 echo "Installing PocketHome"
 
@@ -106,20 +121,17 @@ while true; do
     read -p "Do you want to boot diirectly in text mode?[y/n]" answer
     case $answer in
         [Yy]* ) kill_x; break;;
+        [Nn]* ) break;;
         * ) echo "Please answer yes or no.";
     esac
 done
 
-echo "Installin Retro Arch"
+while true; do
+    read -p "Do you want to build retroarch from source?[y/n]" answer
+    case $answer in
+        [Yy]* ) install_retroarch; break;;
+        [Nn]* ) break;;
+        * ) echo "Please answer yes or no.";
+    esac
+done
 
-git clone git://github.com/libretro/RetroArch.git
-cd RetroArch/
-
-./configure --enable-opengles --disable-oss --disable-ffmpeg --disable-vg \
---disable-cg --enable-neon --enable-floathard --disable-wayland --enable-sdl \
---disable-sdl2
-
-./configure   
-
-make
-sudo make install

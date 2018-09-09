@@ -43,7 +43,7 @@ function kill_x() {
     sudo loadkeys ~/.local/share/keymaps/key_map
 }
 
-function install_retroarch() {
+function build_retroarch() {
     echo "Installin Retro Arch"
 
     git clone git://github.com/libretro/RetroArch.git
@@ -53,6 +53,32 @@ function install_retroarch() {
 
     make
     sudo make install
+}
+
+function install_retroarch() {
+    rm -f obj-unix/release/git_version.o
+    mkdir -p /usr/local/bin 2>/dev/null || /bin/true
+    mkdir -p /etc 2>/dev/null || /bin/true
+    mkdir -p /usr/local/share/applications 2>/dev/null || /bin/true
+    mkdir -p /usr/local/share/doc/retroarch 2>/dev/null || /bin/true
+    mkdir -p /usr/local/share/man/man6 2>/dev/null || /bin/true
+    mkdir -p /usr/local/share/pixmaps 2>/dev/null || /bin/true
+    cp retroarch /usr/local/bin
+    cp tools/cg2glsl.py /usr/local/bin/retroarch-cg2glsl
+    cp retroarch.cfg /etc
+    cp retroarch.desktop /usr/local/share/applications
+    cp docs/retroarch.6 /usr/local/share/man/man6
+    cp docs/retroarch-cg2glsl.6 /usr/local/share/man/man6
+    cp media/retroarch.svg /usr/local/share/pixmaps
+    cp COPYING /usr/local/share/doc/retroarch
+    cp README.md /usr/local/share/doc/retroarch
+    chmod 755 /usr/local/bin/retroarch
+    chmod 755 /usr/local/bin/retroarch-cg2glsl
+    chmod 644 /etc/retroarch.cfg
+    chmod 644 /usr/local/share/applications/retroarch.desktop
+    chmod 644 /usr/local/share/man/man6/retroarch.6
+    chmod 644 /usr/local/share/man/man6/retroarch-cg2glsl.6
+    chmod 644 /usr/local/share/pixmaps/retroarch.svg
 }
 
 echo "Deleting default dirs"
@@ -129,9 +155,8 @@ done
 while true; do
     read -p "Do you want to build retroarch from source?[y/n]" answer
     case $answer in
-        [Yy]* ) install_retroarch; break;;
+        [Yy]* ) build_retroarch; break;;
         [Nn]* ) break;;
         * ) echo "Please answer yes or no.";
     esac
 done
-

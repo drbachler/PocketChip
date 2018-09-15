@@ -50,7 +50,7 @@ function build_retroarch() {
     cd RetroArch/
 
     ./configure --enable-sdl --disable-sdl2 --enable-floathard --enable-neon --disable-opengl --disable-vg --disable-egl --disable-pulse --disable-oss --disable-x11 --disable-wayland --disable-ffmpeg --disable-7zip --disable-libxml2 --disable-freetype
-
+    
     make
     sudo make install
 }
@@ -127,7 +127,7 @@ sudo passwd -l root    # lock the root account from direct login
 sudo sed -i.old /etc/ssh/sshd_config -e'/PermitRootLogin/s/yes/no/'    # configure sshd to not allow root
 sudo service ssh restart
 sudo usermod -a -G dialout $USER
-sudo chown -R chip /rtc/minicom
+sudo chown -R chip /etc/minicom
 sudo sed -i 's/exit 0/sudo systemctl stop serial-getty@ttyS0\nexit 0/g' /etc/rc.local
 
 echo "Installing PocketHome"

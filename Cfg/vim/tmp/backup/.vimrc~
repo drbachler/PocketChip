@@ -1,0 +1,441 @@
+" .vimrc
+" Author: Ignacio Ripoll
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                 BASIC CONFIG                                 "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Here are elicitated what I consider to be basic vim configuration parameters "
+" {
+filetype on
+filetype plugin on
+
+set nocompatible " Tells Vim stop behaving like Vi, nobody likes it.
+set encoding=utf-8 " Use utf-8 encoding.
+" set modelines=0 " Not really sure what this does.
+set autoindent " Keep the same indent.
+set showmode " Show the current mode.
+set showcmd " Show the command being typed.
+set hidden " Hide buffer when abandoned.
+set ruler " Displays the cursor in the status line.
+set laststatus=2 " Always show the status line.
+set ttyfast " Fast terminal connection.
+set number " Display line number.
+set relativenumber " Change the line numbers to be relative to the currenti one.
+set history=100 " Set 100 lines of history file (2 x default)
+set lazyredraw " No screen resize when executing macros.
+set linebreak " Smarter line wrap.
+set splitbelow " Split window horizontally below current split.
+set splitright " Split window vertically right to current split.
+set autoread " Set to auto read when a file is changed from the outside.
+set backspace=indent,eol,start " Allow backspace in insert mode.
+set visualbell " No sounds.
+set title " Window title same as file title.
+set matchpairs+=<:> " Add angle brackets to the paired characters.
+"set synmaxcol=85 " Dont highlight any string longer than 85 chars.
+
+set timeout " time out on mappings and key codes.
+set timeoutlen=3000 " Time out on : mappings set to 3s
+set ttimeoutlen=1000 " Time out on key codes set to 1s
+
+" Better Completion
+set complete=.,w,b,u,t
+set completeopt=longest,menuone,preview
+
+" Save when losing focus
+au FocusLost * :silent! wall
+
+" Resize splits when the window is resized
+au VimResized * :wincmd =
+
+" Leader
+let mapleader = ","
+let maplocalleader = "\\"
+
+" Only show cursorline in the current window and in normal mode.
+augroup cline
+    au!
+    au WinLeave,InsertEnter * set nocursorline
+    au WinEnter,InsertLeave * set cursorline
+
+    " Set the cursor line to be a line indeed, not a highlighted row.
+    au WinEnter,InsertLeave * hi clear CursorLine
+    au WinEnter,InsertLeave * hi CursorLine cterm=underline
+augroup END
+
+" We configure the representation of the invisible characters, being:
+"   + tab
+"   + eol
+"   + trail (end white space)
+"   + extents
+"   + precedes
+"
+" Anytime we enter insert mode those characters are no longer displayed,
+" while when in normal mode they are displayed.
+
+" Show invisible characters (tabs and trailing spaces)
+set list
+set listchars=tab:→\ ,eol:¬,trail:·
+
+set showbreak=↪ " Show that char in a wrapped line.
+
+" Force hide/show invisible characters.
+nnoremap <leader>l :set list!<CR>
+
+augroup trailing
+    au!
+    au InsertEnter * :set listchars-=trail:·
+    au InsertEnter * :set listchars-=eol:¬
+    au InsertLeave * :set listchars+=trail:·
+    au InsertLeave * :set listchars+=eol:¬
+augroup END
+
+" Wildmenu configuration.
+set wildmenu " Enable wildmenu.
+set wildmode=list:longest
+set cmdheight=2 " Set the height of the wildmenu to 2 "lines".
+
+" INORE ALL THE THINGS!!!
+set wildignore+=.hg,.git,.svn                    " Version control.
+set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files.
+set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images.
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files.
+set wildignore+=*.spl                            " compiled spelling word lists.
+set wildignore+=*.sw?                            " Vim swap files.
+set wildignore+=*.DS_Store                       " OSX bullshit.
+set wildignore+=*.luac                           " Lua byte code.
+set wildignore+=migrations                       " Django migrations.
+set wildignore+=*.pyc                            " Python byte code.
+set wildignore+=*.orig                           " Merge resolution files.
+
+" Clojure/Leiningen
+set wildignore+=classes
+set wildignore+=lib
+
+" Make sure Vim returns to the same line when you reopen a file.
+" Thanks, Amit
+augroup line_return
+    au!
+    au BufReadPost *
+        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \     execute 'normal! g`"zvzz' |
+        \ endif
+augroup END
+
+" Some tabulation and wrapping options.
+set tabstop=8
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+set wrap
+set textwidth=80
+set formatoptions=qrn1j
+set colorcolumn=81
+
+set backup                        " Enable backups.
+set noswapfile                    " Erradicate the .swp files.
+
+set undodir=~/.vim/tmp/undo//     " Undo files.
+set backupdir=~/.vim/tmp/backup// " Backups.
+set directory=~/.vim/tmp/swap//   " Swap files.
+
+" Make those folders automatically if they don't already exist.
+if !isdirectory(expand(&undodir))
+    call mkdir(expand(&undodir), "p")
+endif
+if !isdirectory(expand(&backupdir))
+    call mkdir(expand(&backupdir), "p")
+endif
+if !isdirectory(expand(&directory))
+    call mkdir(expand(&directory), "p")
+endif
+
+" We define some colorscheme related stuff.
+syntax on
+set t_Co=256 " Force 256 colours
+set background=dark
+colorscheme orion
+
+" Some search behaviour configuration.
+set ignorecase " Ignore case when searching
+set showmatch " Show matching brackets.
+set matchtime=3 " Speed up matching
+set incsearch " Do highlight as you type you search phrase.
+set hlsearch " Highlight searched for phrases.
+set smartcase " Use case sensitive searching only when pattern has upper case.
+set scrolloff=3 " Minimal number of lines to keep above and below the cursor.
+
+" Vim as it should be, no arrow keys.
+no <down> <Nop>
+no <left> <Nop>
+no <right> <Nop>
+no <up> <Nop>
+vno <down> <Nop>
+vno <left> <Nop>
+vno <right> <Nop>
+vno <up> <Nop>
+
+"}
+
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                               FILE TYPE CONFIG                               "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Change some behaviours depending on the file type we are working on.         "
+" {
+" C
+augroup ft_c
+    au!
+    au FileType c setlocal foldmethod=marker foldmarker={,}
+    au FileType c setlocal textwidth=80
+augroup END
+
+" C++
+augroup ft_cpp
+    au!
+    au FileType cpp setlocal foldmethod=marker foldmarker={,}
+    au FileType cpp setlocal textwidth=80
+augroup END
+
+" Latex
+augroup ft_tex
+    au!
+    au Filetype tex setlocal foldmethod=indent
+    au Filetype tex setlocal textwidth=80
+augroup END
+
+" Python
+augroup ft_py
+    au!
+    au Filetype py setlocal foldmethod=indent
+    au Filetype py setlocal textwidth=120
+augroup END
+
+" Templates
+if has("autocmd")
+    augroup templates
+        autocmd BufNewFile *.sh 0r ~/.vim/templates/bash
+    augroup END
+endif
+
+"}
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                   FOLDING                                    "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Define the behaviour of the folds (code colapse).
+" {
+" Start with all folds closed
+set foldlevelstart=0
+
+set foldmethod=marker " Fold sections as a section between two predefined chars.
+set foldmarker={,} " Set the foldinig setions to be between brackets
+
+" Space to toggle folds.
+nnoremap <Space> za
+vnoremap <Space> za
+
+" Make zO recursively open whatever fold we're in, even if it's partially open.
+nnoremap zO zczO
+
+" "Focus" the current line.  Basically:
+"
+" 1. Close all folds.
+" 2. Open just the folds containing the current line.
+" 3. Move the line to a little bit (15 lines) above the center of the screen.
+" 4. Pulse the cursor line.  My eyes are bad.
+"
+" This mapping wipes out the z mark, which I never use.
+"
+" I use :sus for the rare times I want to actually background Vim.
+nnoremap <c-z> mzzMzvzz15<c-e>
+inoremap <c-f> <esc>mzzMzvzz15<c-e>i
+
+function! MyFoldText() " {
+    let line=getline(v:foldstart)
+
+    let nucolwidth=&fdc+&number*&numberwidth
+    let windowwidth=winwidth(0)-nucolwidth - 3
+    let foldedlinecount=v:foldend-v:foldstart
+
+    " expand tabs into spaces
+    let onetab=strpart('          ', 0, &tabstop)
+    let line=substitute(line, '\t', onetab, 'g')
+
+    let line=strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
+    let fillcharcount = windowwidth - len(line) - len(foldedlinecount)
+    return line . ' ' . repeat(" ",fillcharcount) . foldedlinecount . ' ' . ' '
+endfunction " }
+
+set foldtext=MyFoldText()
+
+" }
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                   MAPPING                                    "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Definition of key combinations to do cool stuff.
+" Note that the following nomenclature is used:
+"   + nnoremap <key(s)> <action>  | For normal mode.
+"   + vnoremap <key(s)> <action>  | For visual mode.
+"   + inoremap <key(s)> <action>  | For insert mode.
+"
+" The following key definitions may be useful:
+"   + <C-X> means CTRL+X, being X any key in the keyboard.
+"   + <CR> means carriage return (pressing enter key basically).
+"   + <TAB> tabulator.
+"   + <SPACE> space-bar.
+"   + <LEFT|RIGHT|DOWN|UP> arrow keys.
+" Note that everything in the previous list can be type in lower case also.
+" {
+" Important files. I don't really use those mappings.
+"nnoremap <leader>r :vsplit ~/.vimrc<cr>
+"nnoremap <leader>b :vsplit ~/.bash_aliasies<cr>
+"nnoremap <leader>x :vsplit ~/.tmux.conf<cr>
+
+" Toggle line numbers (they are not always needed)
+nnoremap <leader>n :setlocal number!<cr>
+
+" Move across tabs.
+nnoremap <leader>( :tabprev<cr>
+nnoremap <leader>) :tabnext<cr>
+
+" Remove highlight from the matching results in a search.
+noremap <silent> <leader><space> :noh<cr>:call clearmatches()<cr>
+
+" Cap letters do the same as small letters but till the eol.
+nnoremap Y y$
+nnoremap D d$
+nnoremap H ^
+nnoremap L $
+vnoremap L g_
+
+" Formatting, TextMate-style
+nnoremap Q gqip
+vnoremap Q gq
+
+" Keep search matches in the middle of the window.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" Use tab to move through matching brackets or whatsoever.
+map <tab> %
+
+" Vertical split mapping.
+nnoremap <leader>v :vsplit 
+
+" Horizaontal split mapping.
+nnoremap <leader>h :split 
+
+" Compile a latex file.
+nnoremap <leader>t :!pdflatex 
+
+" Split resizing in steps of 1 columns/rows. May be tedious, but accurate.
+nnoremap <c-left> :vertical resize -1<cr>
+nnoremap <c-right> :vertical resize +1<cr>
+nnoremap <c-up> :resize +1<cr>
+nnoremap <c-down> :resize -1<cr>
+
+" More intuitive navigation accross the splits, ctrl+h/j/k/l
+nnoremap <c-j> <c-w><c-j>
+nnoremap <c-k> <c-w><c-k>
+nnoremap <c-l> <c-w><c-l>
+nnoremap <c-h> <c-w><c-h>
+
+" "Uppercase word" mapping.
+"
+" This mapping allows you to press <c-u> in insert mode to convert the current
+" word to uppercase.  It's handy when you're writing names of constants and
+" don't want to use Capslock.
+"
+" To use it you type the name of the constant in lowercase.  While your
+" cursor is at the end of the word, press <c-u> to uppercase it, and then
+" continue happily on your way:
+"
+"                            cursor
+"                            v
+"     max_connections_allowed|
+"     <c-u>
+"     MAX_CONNECTIONS_ALLOWED|
+"                            ^
+"                            cursor
+"
+" It works by exiting out of insert mode, recording the current cursor location
+" in the z mark, using gUiw to uppercase inside the current word, moving back to
+" the z mark, and entering insert mode again.
+"
+" Note that this will overwrite the contents of the z mark.  I never use it, but
+" if you do you'll probably want to use another mark.
+inoremap <c-u> <esc>mzgUiw`za
+vnoremap <c-u> <esc>mzgUiw`za
+nnoremap <c-u> <esc>mzgUiw`za
+
+" When you press * it jumps to the next instance (if any), we want to avoid
+" that.
+nnoremap * *<c-o>
+
+" List navigation 
+"nnoremap <left>  :cprev<cr>zvzz
+"nnoremap <right> :cnext<cr>zvzz
+"nnoremap <up>    :lprev<cr>zvzz
+"nnoremap <down>  :lnext<cr>zvzz
+
+" }
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                   PLUGINS                                    "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugin definition and configuration.
+" {
+" This mini-plugin provides a few mappings for highlighting words temporarily.
+"
+" Sometimes you're looking at a hairy piece of code and would like a certain
+" word or two to stand out temporarily.  You can search for it, but that only
+" gives you one color of highlighting.  Now you can use <leader>N where N is
+" a number from 1-6 to highlight the current word in a specific color.
+" {
+
+function! HiInterestingWord(n) " {
+    " Save our location.
+    normal! mz
+
+    " Yank the current word into the z register.
+    normal! "zyiw
+
+    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
+    let mid = 86750 + a:n
+
+    " Clear existing matches, but don't worry if they don't exist.
+    silent! call matchdelete(mid)
+
+    " Construct a literal pattern that has to match at boundaries.
+    let pat = '\V\<' . escape(@z, '\') . '\>'
+
+    " Actually match the words.
+    call matchadd("InterestingWord" . a:n, pat, 1, mid)
+
+    " Move back to our original location.
+    normal! `z
+endfunction " }
+
+" Mappings
+
+nnoremap <silent> <leader>1 :call HiInterestingWord(1)<cr>
+nnoremap <silent> <leader>2 :call HiInterestingWord(2)<cr>
+nnoremap <silent> <leader>3 :call HiInterestingWord(3)<cr>
+nnoremap <silent> <leader>4 :call HiInterestingWord(4)<cr>
+nnoremap <silent> <leader>5 :call HiInterestingWord(5)<cr>
+nnoremap <silent> <leader>6 :call HiInterestingWord(6)<cr>
+
+" Default Highlights
+
+hi def InterestingWord1 ctermfg=16 ctermbg=214
+hi def InterestingWord2 ctermfg=16 ctermbg=154
+hi def InterestingWord3 ctermfg=16 ctermbg=121
+hi def InterestingWord4 ctermfg=16 ctermbg=137
+hi def InterestingWord5 ctermfg=16 ctermbg=211
+hi def InterestingWord6 ctermfg=16 ctermbg=195
+" }
+
+" }

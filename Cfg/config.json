@@ -1,0 +1,77 @@
+{
+  "defaultPage": "Apps",
+  "pages": [
+    {
+      "name": "Apps",
+      "items": [
+        {
+          "name": "Terminal",
+          "icon": "/home/chip/.pocket-home/icons/terminal.png",
+          "shell": "st"
+        },
+        {
+          "name": "Retroarch",
+          "icon": "/home/chip/.pocket-home/icons/retroarch.png",
+          "shell": "retroarch"
+        },
+        {
+          "name": "Make Music",
+          "icon": "appIcons/musicsequencer.png",
+          "shell": "sunvox"
+        },
+        {
+          "name": "Get Help",
+          "icon": "appIcons/help.png",
+          "shell": "surf /usr/share/pocketchip-localdoc/index.html"
+        },
+        {
+          "name": "Write",
+          "icon": "appIcons/texteditor.png",
+          "shell": "leafpad"
+        },
+        {
+          "name": "Browse Files",
+          "icon": "appIcons/filebrowser.png",
+          "shell": "pcmanfm"
+        }
+      ],
+      "cornerButtons": [
+        {
+          "location": "TopLeft",
+          "name": "Battery",
+          "icon": "battery_0.png"
+        },
+        {
+          "location": "TopRight",
+          "name": "WiFi",
+          "icon": "wifiOff.png"
+        },
+        {
+          "location": "BottomLeft",
+          "name": "Power",
+          "icon": "powerIcon.png"
+        },
+        {
+          "location": "BottomRight",
+          "name": "Settings",
+          "icon": "settingsIcon.png"
+        }
+      ]
+    },
+    {
+      "name": "Settings"
+    },
+    {
+      "name": "Power"
+    },
+    {
+      "name": "WiFi"
+    },
+    {
+      "name": "Battery"
+    }
+  ],
+  "background": "4D4D4D",
+  "timeformat": "24h",
+  "cursor": "notvisible"
+}

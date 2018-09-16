@@ -1,0 +1,459 @@
+\section*{Security in mobile communications}
+\addcontentsline{toc}{section}{Security in mobile communications}
+
+\subsection*{1G - $ 1^{st} $ generation networks}
+\addcontentsline{toc}{subsection}{1G - $ 1^{st} $ generation networks}
+
+It appeared in the $ 70s $ and was developed during the $ 80s $. It is based on
+analogical technologies and it has low capacity, $ 8 \sim 10 Kbps $. Two
+different standards:
+
+\begin{itemize}
+    \item ETACS: european total access communication system, $ 25 KHz $ bandwith
+        and two different channels $ 890 \sim 915 MHz $ for transmission from MS
+        to BS and $ 935 \sim 960 MHz $ for transmission from BS to MS.
+
+    \item AMPS: american mobile phone system (AT\&T). $ 30 KHz $ bandwith and
+        two different channels $ 824 \sim 848 MHz $ for transmission from MS to
+        BS and $ 869 \sim 894 MHz $ for transmission from BS to MS.
+\end{itemize}
+
+It has several vulnerabilities, such as: limited numbr of users, interference
+of the analogical signal, no authentication and no encryption.
+
+\subsection*{2G - GSM}
+\addcontentsline{toc}{subsection}{2G - GSM}
+
+Global system for mobile comunication (GSM). Was developed to provide higher
+quality mobile voice communication and disagned for digitalized voice. It was
+developed by ETSI (european telecomunicaions standards institute) and the first
+comercial solution apeared in 1995 in USA. It uses quad band $ 850 \mid 900 \mid
+1800 \mid 1900 MHz $. Te goals are to avoid fraud and to be as secure as the
+land lines. Two identifying elements are introduced:
+
+\begin{itemize}
+    \item SIM: subscriber identity module.
+    \item IMEI: international mobile equipment identity.
+\end{itemize}
+
+\begin{figure}[htb]
+    \centering
+    \caption{GSM infrastructure}
+    \includegraphics[width=\textwidth]{./img/GSM_infrastructure.png}
+\end{figure}
+
+SIM can perform two criptographic algorithms: \textit{A3} and \textit{A8}. It
+has associated a TMSI (temporal mobile subscriber identity) and a LAI (local
+area identity). SIM card stores 256K and it holds $ k_i $ (subscriber
+authentication key), IMSI (international mobile subscriber identity), PIN
+(personal identificatio number) and PUK (personal unlock key). \\
+
+LAI is a number that uniquely identifies each LA within a GSM PLMN. It is
+divided in:
+
+\begin{itemize}
+    \item MCC: mobile country code, 3 digits.
+    \item MNC: mobile network code, 2/3 digits.
+    \item LAC: local area code, max 16 bits. Each LAC is assigned by a VLR.
+\end{itemize}
+
+Appending CI (cell identity, 16 bit max) value to LAI we obtain CGI (cell global
+identity). When the connection is stablished between MS and BTS the LAI is
+checked to see if they are the same. BTS broadcasts LAC periodically. A PLMN is
+identified by MCC and MNC. \\
+
+IMSI, it is how the subscriber identifies in the network. Is embedded in the SIM.
+It is divided in:
+
+\begin{itemize}
+    \item MCC: mobile country code, 3 digits.
+    \item MNC: mobile network code, 2/3 digits.
+    \item MSIN: mobile subscriber identification number, max 10 digits.
+\end{itemize}
+
+\subsubsection*{Authentication}
+\addcontentsline{toc}{subsubsection}{Authentication}
+
+Verify the identity and the validity of the SIM card through the network and
+ensure that the subscriber has authorized access to the network.
+
+\begin{enumerate}
+    \item If the PIN is valid, SIM retrieves the IMSI (or TMSI).
+    \item MS sends IMSI to the nearest BTS and to MSC/VLR. If TMSI is sent
+        instead, MSC/VLR obtain IMSI from TMSI and sends it HLR.
+    \item HLR/AUC generate triplet: $ RAND $, $ XRES $ and $ k_s $; and send
+        them to MSC/VLR. In practice 5 triplets are created but only one is used,
+        the others are saved to reduce roaming handover time.
+    \item MSC/VLR send $ RAND $ to MS and waits for the $ SRES $ to compare to
+        $ XRES $ and authenticate or not.
+\end{enumerate}
+
+A3 algorithm is used to genererate the $ SRES $ from the $ RAND $, it is a keyed
+one-way function. It is a propietary algorithm (vulnerable). 4 bytes in the
+second round depend on 4 bytes of the first one so the difussion is bad. SIM may
+be cloned and $ k_i $ can be obtained in hours with a rogue station. A8
+algorithm is used to generate the session key, this key is used to encrypt data
+and voice; and it is 64 bits long. $ k_i $ is generated in the SIM and
+transferred to the MS and it is used by A5 algorithm. To clone the SIM is
+required the IMSI and the $ k_i $, if two clones are identified in the same LA,
+both are invalidated. \\
+
+In this scheme the network authenticates the user but not the other way around.
+There must exist a trust relation between the components of the network (BTS,
+BSC, ...). GSM just encrypts the first hop (MS $ \leftrightarrow $ BTS).
+
+\begin{figure}[H]
+    \centering
+    \input{./fig/GSM_auth.tex}
+    \caption{GSM authentication process.}
+\end{figure}
+
+\subsubsection*{Confidentiality}
+\addcontentsline{toc}{subsubsection}{Confidentiality}
+
+MS is identified by IMSI, then a valid TMSI is created for the LA and sent
+encrypted to the MS. VLR associates TMSI with the IMSI. IMSI is only used if
+TMSI is not valid for the current LA. If LAI is changed so it is the TMSI. Any
+BTS could ask for the IMSI that is sent in plaintext so attacks using rogue
+stations can be done. \\
+
+A5 algorithm encrypts de data. It is implemented in hardware, not in SIM. A5/1
+and A5/2 are stream ciphers that combine $ k_c $ with frame number to encrypt
+the data. All MS must implement A5/0 (no security at all), A5/1 and A5/2. Same
+$ k_c $ is used for all the  A5/x algorithms so several attacks can be performed.
+For instance you could capture data encrypted with A5/3, then set a rogue station
+downgrading the service to A5/2, obtain $ k_c $ and finally decript the
+previously captured data.
+
+\subsection*{GPRS \& EDGE}
+\addcontentsline{toc}{subsection}{GPRS \& EDGE}
+
+General paket radio service (GPRS). Intermediate technology between 2G and 3G.
+Two new elements needed in the infrastructure: SGNS (service GPRS support node)
+and GGSN (gateway GPRS support node), they are both standarized by ETSI.
+Authentication protocol is the same as in GSM, encryption is performed over
+the link layer (LLC) instead of the physical layer (like in GSM) and it is
+enhanced wit GEA (GPRS encryption algoritm):
+
+\begin{itemize}
+    \item GEA/0: no encryption.
+    \item GEA/1: 96 bit propietary stream cipher. 64 bit key. Widely used.
+    \item GEA/2: 125 bit propietary stream cipher. 64 bit key. Widely used.
+    \item GEA/3: 128 bit standard bit block cipher. 64 bit key. Only used in
+        new networks.
+    \item GEA/4: 128 bit standard bit block cipher. 128 bit key. Not used.
+\end{itemize}
+
+A5/3 and GEA/3 are based on Kasumi (3GPP) algorithm, a binary stream key
+generator. As input it has $ K_c $, a counter and an additional direction. \\
+
+Enhanced data rates for GSM evolution (EDGE). Implemented within GSM network. It
+can be used for any application that implements packet commutation for data
+connections, such as Internet. No need for additional hardware and easy to
+implement in GSM network. It could increase up to four times GPRS traffic. EDGE
+uses the same mechanisms as GPRS, it is just an implementation in the physical
+layer. It provides a new modulation scheme called ``phase shift in 8 states'',
+that allows up to $ 475 Kbps $. Change in the signaling data rate between MS and
+MSC/VLR. Change in the radio interface in the base station subsystem – BSS,
+especially in the hardware at both link points (MS).
+
+\begin{figure}[htb]
+    \centering
+    \caption{GPRS and EDGE infrastructure}
+    \includegraphics[width=\textwidth]{./img/EDGE_infrastructure.png}
+\end{figure}
+
+\subsection*{3G - UMTS}
+\addcontentsline{toc}{subsection}{3G - UMTS}
+
+Previous soulutions were not compatible worldwide (band frequency, A5
+implementation ...). There is a need to develop one standard for the whole world.
+The objective is to make user ME small and cheap, interoperable with satellite
+systems, robustness in high demanding locations, global roaming, voice quality
+for data transmission (at least $ 2Mbps $), GSM compatible. \\
+
+Universal mobile telecomunication system (UMTS) is an ETSI/SMG (special mobile
+group) standard and developed by 3GPP ($ 3^{rd} $ generation partnership
+project). It uses WCDMA (wideband code division multiple access). Specifies a
+complete network system supporting older ones. It has two main components:
+
+\begin{itemize}
+    \item UTRAN: UMTS radio access network.
+    \item CN: core network.
+\end{itemize}
+
+The base station is now called Node B, its main function is to modulate and
+demodulate signals. The base transceiver station is called RNC (radio network
+controller), it controls the radioresources (segmentation, assembly), in charge
+of encryption. \\
+
+\begin{figure}[htb]
+    \centering
+    \caption{UMTS infrastructure}
+    \includegraphics[width=\textwidth]{./img/UMTS_infrastructure.png}
+\end{figure}
+
+The most important advantages is the increasement of bandwith, QoS, international
+roaming USIM (universal subscriber identity module) better than the GSM SIM.
+Security wise, the network is also authentified, best cryptographical algorithms,
+integrity of the data is used, IPSEC can be used.
+
+\subsubsection*{Authentication}
+\addcontentsline{toc}{subsubsection}{Authentication}
+
+It is done trhoug AKA (authentication and key agreement). Three entities are
+involved in the process:
+
+\begin{itemize}
+    \item Home environment (HE or VHE): represented by the authentication center
+        (AUC).
+    \item Serving network (SN): represented by SGSN that authenticates de
+        subscriber and provides mobility management, session management and
+        interaction with other SNs.
+    \item User equipement: represented by the USIM. Verifies that the SN has been
+        authenticated by the HE.
+\end{itemize}
+
+Trust between SN and HE is needed. To perform AKA, USIM and HE must share $ k_i $
+in advance. After the protocol is applied three 128 bits keys are derived:
+CK (cipher key), IK (integrity key), AK (anonimity key). This protocol is
+applied during user's first sign up, request for location update or request of
+connection and disconnection. The procedure is as follows:
+
+\begin{enumerate}
+    \item UE stablishes connection sending it's security capabilities and TMSI
+        (or IMSI).
+    \item The SGSN request HE to authenticate UE in the network.
+    \item SGSN asks the challenge and returns to the UE $ RAND $ and $ AUTN $
+        (authentication token).
+    \item UE verifies the $ AUTN $, computes $ SRES $ and sends it back.
+    \item Network checks $ SRES $
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \input{./fig/UMTS_auth.tex}
+    \caption{UMTS authentication process.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+
+    \subfigure[Network AKA vector]{\includegraphics[width=0.7\textwidth]{./img/Network_AKA.png}}
+    \subfigure[User AKA vector]{\includegraphics[width=0.7\textwidth]{./img/User_AKA.png}}
+\end{figure}
+
+The network has a SQN per subscriber that is updated after every authentication.
+It is used to authenticate the network. A rogue station cannot generate valid
+SQN and MAC. $ fx $ are implemented in AUC and USIM. They are similar functions
+but the ouptut of one function does not provide information about the others.
+
+\subsubsection*{Confidentiality}
+\addcontentsline{toc}{subsubsection}{Confidentiality}
+
+MILENAGE algorithm is the default in all $ f $ functions, it is based on AES
+block chain and operates on RLC (radio link control). For encryption $ f8 $ is
+used, it is stream cipher that takes as parameters:
+
+\begin{itemize}
+    \item $ COUNT–C $: time variable, 32 bits.
+    \item $ BEARER $: representing the value for different radio carrier from
+        the same user, 5 bits.
+    \item $ DIRECTION $: state if is up/downlink, 1 bit.
+    \item $ LENGTH $: length for the generated frame key stream.
+\end{itemize}
+
+\subsubsection*{Integrity}
+\addcontentsline{toc}{subsubsection}{Integrity}
+
+$ f9 $ is an integrity algorithm. Used to protect integrity and authentication
+of the data source. Generates a MAC code of 32 bits. Based on Kasumi CBC. It
+takes the following parameters:
+
+\begin{itemize}
+    \item $ COUNT $: 1 frame variable, protection against reply, 32 bits.
+    \item $ FRESH $: nonce 32 bits.
+    \item $ MESSAGE $:is the message, if one is wish.
+    \item $ DIRECTION $: state if is up/downlink, 1 bit.
+\end{itemize}
+
+$ f9 $ is only applied for the integrity of signaling data at RRC (radio
+resource control) layer due to performance and the amount of data signalized in
+a channel. For the functions $ f8 $ and $ f9 $ was to early to implement AES,
+standarization was purposed but never carried out. Kasumi is used because there
+are no practical attacks and it has an operation mode to work as stream cipher.
+
+\subsection*{4G - LTE}
+\addcontentsline{toc}{subsection}{4G - LTE}
+
+The major motivation is to obtain higher data rates and improve QoS. It also has
+backwards compatibility, lower complexity, packet switched system, improved
+system latency ($ 10 ms $), higher mobility ($ 350 km/h $). It has two access
+modes FDD and TDD. Two transmission schemes down link $ \rightarrow $ OFDMA and
+up link $ \rightarrow $ SC-FDMA. It uses MIMO technology to improve data
+capacity, multiple antennas to increase coverage and physical layer capacity.
+There are trhee categories:
+
+\begin{itemize}
+    \item Path diversity.
+    \item Beamsteering: is associated with the physical layer characteristics of
+        the radio signal by controling its phase and amplitude.
+    \item Spatial multiplexing: allows the simultaneous transmission of more
+        than one stream of data in time and frequency.
+
+        \begin{figure}[H]
+            \centering
+            \input{./fig/MIMO.tex}
+            \caption{MIMO scheme}
+        \end{figure}
+\end{itemize}
+
+SIMO $ + $ MISO $ \ne $ MIMO and transmit diversity $ + $ receive diversity
+$ \ne $ spatial multiplexing. Just because there is more than one antenna does
+not mean that it is MIMO. Diversity can be combined with MIMO spatial
+multiplexing to improve performance, for MIMO to work paths must be correlated. \\
+
+\begin{figure}[htb]
+    \centering
+    \caption{LTE infrastructure}
+    \includegraphics[width=\textwidth]{./img/LTE_infrastructure.png}
+\end{figure}
+
+\begin{itemize}
+    \item eNB: evolved node B. The only functional element to access the network.
+    \item MME: mobility management entity. Singnaling server, similar to SGSN.
+        Mobility and session management.
+    \item S-GW: service getway. User traffic interchange between access network
+        and IP network core. Anchor for transfers between other 3GPP networks.
+        Routing/handover of eNB, P-GW and SGSN.
+    \item P-GW: PDN gateway. Traffic interchange with external networks. Key to
+        policy enforcement and collection of data pricing. Anchor for handover
+        with non-3GPP networks.
+    \item PCRF: policy and charging rule function. Central database of EPS system
+        users. Identities, service data and user location.
+    \item HSS: home subscriber server. It stores mobility, service data of each
+        subscriber, has the AuC. QoS policy management and pricing.
+\end{itemize}
+
+LTE uses multiple planes, logical multiplexed planes in RF. (1) User plane (AS):
+for the traffic in data network. (2) Control plane (NAS): signaling traffic,
+session/routing, source/destination control, etc. (3) Management plane: for the
+management traffic, kind subset of (2). \\
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \centering
+    \input{./fig/LTE_stack.tex}
+\end{wrapfigure}
+
+LTE stack:
+
+\begin{itemize}
+    \item NAS: non access stratum. Functional layer between core network and UE.
+        Manages stablishment of communication sessions for continuous
+        communication with the UE as it moves.
+    \item RRC: radio resources control. transfer NAS messages, user plane
+        information may be included.
+    \item PDCP: paket data convergence protocol. Header compression, radio
+        encryption, integrity protection of control plane, duplicate detection.
+    \item RLC: radio link control. Redirect pakets to be transferred over the
+        air interface. Re-segmentation, concatenation, duplicate detection.
+    \item MAC: medium access control. Multiplexing and QoS.
+    \item PHY: logical transport channel mapping, traffic volume measurement,
+        [de]multiplexing, priority handling, transport format selection.
+\end{itemize}
+
+\subsubsection*{Authentication}
+\addcontentsline{toc}{subsubsection}{Authentication}
+
+Process to verify if the user is an authorized subscriber of the network to
+which he is trying to access. Various authentication procedures available:
+
+\begin{itemize}
+    \item LTE uses the EPS AKA procefure for mutual authentication between users
+        and the network, in two steps:
+        \begin{enumerate}
+            \item HSS generates EPS authentication vector ($RAND$, $AUTN$,
+                $XRES$, $K_{ASME}$) and delivers them to a MME.
+            \item MME selects one of the authentication vectors and uses it for
+                mutual authentication with an UE and shares the same key
+                ($K_{ASME}$) with each other.
+        \end{enumerate}
+
+    \item Mutual authentication: since the user service network ID is required
+        for generating the authentication vector, the authentication of the
+        network by the user is performed in addition to the user's authentication
+        by the network.
+\end{itemize}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=\textwidth]{./img/LTE_AS_authentication.png}
+    \caption{LTE AS (user plane) authentication}
+\end{figure}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=\textwidth]{./img/LTE_NAS_authentication.png}
+    \caption{LTE NAS (signaling plane) authentication}
+\end{figure}
+\clearpage
+
+\subsubsection*{Confidentiality}
+\addcontentsline{toc}{subsubsection}{Confidentiality}
+
+It is protected the air interface connection between UE and eNB. There are
+currently three algorithms EEA/1, EEA/2, EEA/3 with 128 bit keys (extendible up
+to 256 bits). Encryption and decryption done on PDCP and NAS. Several keysa are
+derived:
+
+\begin{itemize}
+    \item $ K $: 128 bits master key. Embedded into USIM and HSS by carrier.
+    \item $ CK \& IK $: 128 bits cipher and integrity keys.
+    \item $ K_{ASME} $: 256 bits local master key derived from $ CK \& IK $.
+    \item $ K_{eNB} $: 256 bits key used by the eNB to derive more keys.
+    \item $ K_{NASenc} \& K_{NASint} $: 256/128 bits key protecting the NAS.
+    \item $ K_{RRcenc} \& K_{RRCint} $: 256/128 bits key protecting the RRC.
+    \item $ K_{UPenc} \& K_{UPint} $: 256/128 bits key protecting the user
+        plane traffic.
+\end{itemize}
+
+EEA algorithm (used for encryption) and EIA algorithm (used for integrity) take
+as input parameters: $K$ appropiate key, $COUNT$ time variable, $BEARER$ value
+that represents the same key for different radio bearers of the single user,
+$DIRECTION$ states [up/down]link, $LENGTH$ key length for the frame flow
+generated. Three algoritms:
+
+\begin{itemize}
+    \item EEA1/EIA1: based on SNOW3G. Stream cipher. As different from Kasumi as
+        possible, selected during UMTS security design. Allows low power
+        consumption and low gate count implementation in hardware.
+    \item EEA2/EIA2: based on AES-CCM. CMAC mode for MAC integrity. Chosen
+        because eNB already supports AES.
+    \item EEA3/EIA3: based on ZUC stream cipher.
+\end{itemize}
+
+LTE backhaul, is the portion of hierarchical network comprising the intermediate
+links between the core and the subnets at its edges. Backhaul must be protected,
+infrastructure may be shared and is not always possible to trust physical
+security of an eNB.
+
+\begin{table}[H]
+\caption{Comparison of mobile technologies}
+\label{my-label}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\multicolumn{1}{|c|}{Symbol} & \multicolumn{1}{c|}{Standard} & \multicolumn{1}{c|}{Full name} & \multicolumn{1}{c|}{Max Down Speed} & \multicolumn{1}{c|}{Max Up Speed} \\ \hline
+2G & GSM & Global system for mobile connections & $ 14.4 Kbps $ & $ 14.4 Kbps $ \\ \hline
+G & GPRS & General packet radio service & $ 53.6 Kbps $ & $ 26.8 Kbps $ \\ \hline
+E & EDGE & Enhanced data rate for GSM evolution & $ 217.6 Kbps $ & $ 108.8 Kbps $ \\ \hline
+3G & UMTS & Universal mobile telecommunication system & $ 384 Kbps $ & $ 128 Kbps $ \\ \hline
+H & HSPA & High speed packet access & $ 7.2 Mbps $ & $ 3.6 Mbps $ \\ \hline
+H+ & HSPA+ & Evolved HSPA - Release 6 & $ 14.4 Mbps $ & $ 5.76 Mbps $ \\ \hline
+H+ & HSPA+ & Evolved HSPA - Release 7 & $ 21.1 Mbps $ & $ 11.5 Mbps $ \\ \hline
+H+ & HSPA+ & Evolved HSPA - Release 8 & $ 42.2 Mbps $ & $ 11.5 Mbps $ \\ \hline
+H+ & HSPA+ & Evolved HSPA - Release 9 & $ 84.4 Mbps $ & $ 11.5 Mbps $ \\ \hline
+H+ & HSPA+ & Evolved HSPA - Release 10 & $ 168 Mbps $ & $ 23 Mbps $ \\ \hline
+4G & LTE & Long term evolution & $ 100 Mbps $ & $ 50 Mbps $ \\ \hline
+4G & LTE-A & LTE - Advanced & $ 1 Gbps $ & $ 500 Mbps $ \\ \hline
+\end{tabular}
+\end{table}

@@ -1,0 +1,15 @@
+{{ define "title" -}}
+  {{ .Title }} | {{ .Site.Title }}
+{{- end }}
+{{ define "header" }}
+  {{ partial "menu.html" . }}
+{{ end }}
+{{ define "main" }}
+  <header>
+    <h1>{{ .Title }}</h1>
+  </header>
+  {{ .Content }}
+      {{ partial "asset.html" .}}
+    {{ end }}
+{{ define "footer" }}
+{{ end }}

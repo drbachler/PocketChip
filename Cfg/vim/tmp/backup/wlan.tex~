@@ -1,0 +1,209 @@
+\section*{Security in WLAN}
+\addcontentsline{toc}{section}{Security in WLAN}
+
+\subsection*{IEEE 802.11}
+\addcontentsline{toc}{subsection}{IEEE 802.11}
+
+\begin{figure}[H]
+    \centering
+    \input{./fig/802-11_data_frame.tex}
+    \caption{IEEE 802.11 data frame}
+\end{figure}
+
+\begin{itemize}
+    \item Access point (AP): any entity that has station functionallity and
+        provides access to a wireless network.
+    \item Basic service set (BSS): set of wireless stations executing the same
+        MAC protocl and competing for access in the same medium.
+    \item Coordination function (CF): protocol used to transmit PDUs (protocol
+        data unit) when station is operating inside a BSS.
+    \item Distribution system (DS): system to connect a set of BSS and LANs to
+        create an ESS (extended service set).
+    \item Extended service set (ESS): set of one or more BSS and LANs that are
+        considered by the LLC (logical link control) as one.
+    \item MAC protocol data unit (MPDU): unit of data of MAC protocol.
+    \item MAC service data unit (MSDU): unit of information in the LLC protocol.
+    \item Station: any 802.11 compliant device.
+\end{itemize}
+
+APs are identified either by the \textbf{SSID} (service set identifier) or the
+\textbf{BSSID} (basic service set identifier). Stations and AP exchange two type
+of frames: data frames and admin frames, used to establish AP and station
+associations, and network discovery among others. There exist three association
+states: not authenticated therefore not associated, authenticated and not
+associated, and authenticated and associated. A terminal can only be associated
+to an AP at a time, association can only take place after authentication.\\
+
+IEE 802.11 or WLAN only deals with the last communication hop, it does not deal
+with end to end communication. There is not a stablished procedure for key
+agreement, typically every station and AP in a BSS use the same PSK, althought
+the standard allows $ 4 $ PSKs per BSS. \\
+
+APs can announce their existance using beacons containing the SSID. Stations
+passively scann all the channels looking for those beacons and sending probes
+to connect to a particular SSID or any. When one of those probes reaches the
+target AP, it replies with a probe-response. There are two authentication models:
+
+\begin{itemize}
+    \item Open system authentication (OSA): any station can connect to the AP.
+    \item Shared key authentication (SKA or PSK): before the authentication
+        process a symmetric key was pre-shared. Challenge-response protocol:
+        station asks for connection, AP challenges the station (to verify it
+        knows the key), AP sends pseudorandom number in clear, station encrypts
+        the pseudorandom number and sends it back to the AP, finally AP decrypts
+        and verifies.
+\end{itemize}
+
+\subsection*{Wired equivalent priacy - WEP}
+\addcontentsline{toc}{subsection}{Wired equivalent priacy - WEP}
+
+Used to encrypt wireless trafic, it uses RC4 stream cipher witha key length of
+$ 40 $ or $ 104 $ bits.
+
+\begin{figure}[H]
+    \centering
+    \input{./fig/wep.tex}
+    \caption{WEP encryption diagram}
+\end{figure}
+
+This scheme has several vulnerabilities. To begin with, the authentication is
+one way, only the AP authenticates the station so fake AP may be used. Key
+distribution is manual which may end up in [un]wanted key disclosure. Key size
+is too small combined with stream cipher keystream reuseage vulnerability. CRC
+integrity function is not cryptographically secure. \\
+
+\begin{itemize}
+    \item Fake authetication: $ C \oplus M = (M \oplus KS) \oplus M = KS $.
+        C: challenge, R: response, KS: key stream.
+    \item Key authentication: key should be regularly changed to avoid KS
+        repetition. Not practical due to manual redistribution.
+    \item Pseudo authentication: BSSIDs and SSIDs can be faked.
+    \item Handoff: roamning between BSSs from the same ESS (moving from one
+        AP with weak signal to an other with stronger one). This implies a new
+        authenticaion process.
+    \item Two time pad: $ c_1 \oplus c_2 = m_1 \oplus m_2 $. Crib dragging.
+\end{itemize}
+
+Due to the small length of the IV collision may (and will) happen which implies
+same keystreams. Birthday paradox states that a collision will happen with a
+probability $ P > 0.5 $. The IV may be predictable on AP reset (it depends on
+the manufacturer). To speedup packet generation, therefore IV collision, fake
+pakets can be sent. Also the ciphertect can be modified because CRC is not
+cryptographically secure. \\
+
+No clue how attacks on wep work! \\
+
+\subsection*{WPA and WPA2}
+\addcontentsline{toc}{subsection}{WPA and WPA2}
+
+A replacement for WEP is needed, two alternatives WPA (Wi-Fi protected access)
+and WPA2. They have both two modes: personal (PSK) and enterprise (EAP).
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|l|l|l|}
+        \cline{2-4}
+        & \multicolumn{1}{c|}{WEP} & \multicolumn{1}{c|}{WPA} & \multicolumn{1}{c|}{WPA2} \\ \hline
+        \multicolumn{1}{|l|}{Authentication} & N/A & IEEE 802.1x/EAP/PSK & IEEE802.1x/EAP/PSK \\ \hline
+        \multicolumn{1}{|l|}{Encryption Algorithm} & RC4 & RC4 & AES \\ \hline
+        \multicolumn{1}{|l|}{Key Size} & 40/104 bits & 128 bits & 128 bits \\ \hline
+        \multicolumn{1}{|l|}{Encryption Method} & WEP & TKIP & CCMP \\ \hline
+        \multicolumn{1}{|l|}{Data Integrity} & CRC-32 & MIC & MIC \\ \hline
+        \multicolumn{1}{|l|}{IV size} & 24 bits & 48 bits & 48 bits \\ \hline
+        \multicolumn{1}{|l|}{Per paket key} & No & Yes & Yes \\ \hline
+    \end{tabular}
+\end{table}
+
+Both protocols are divided in 5 phases:
+
+\begin{enumerate}
+    \item Discovery: the purpose of this phase is for the station and the AP
+        recognize each other, agree on a set of security capabilities and
+        establish an association for future communication. This process requires
+        three steps: AP discovery using beacons and probes (as in WEP),
+        authentication request from the station to the AP and negotiation of
+        security policies and authentication mechanisms.
+    \item Authentication (Enterpriese Mode): enables mutual authentication
+        between a station and an authentication server (AS) located in the
+        enterprise. Authentication is designed to only allow authorized stations
+        in the network and assure the station that is communicating with a
+        legitimate network. This process requires three steps: connect to AS,
+        extensible authentication protocol (EAP) and secure key delivery. EAP
+        (extensible access protocol) was designed for the authentication in
+        Ethernet network.
+
+        \begin{figure}[H]
+            \centering
+            \input{./fig/EAP.tex}
+            \caption{EAP authentication protocol}
+        \end{figure}
+
+        EAP may be combined with TLS and certificates.
+    \item Key management: at the beggining we had the PSK in phase 2 EAPK (master
+        session key) is negotiated and from they both we can derive PMK (pairwise
+        master key). PMS is used to create KCK (key confirmation key), KEK (key
+        encryption key) and TK (temporary key).
+
+        \begin{figure}[H]
+            \centering
+            \input{./fig/WPA_key_hierarchy.tex}
+            \caption{WPA key hierarchy}
+        \end{figure}
+
+        $ PTK = f(PMK, Anonce, Snonce, Auth MAC, Sup MAC) $:
+        \begin{itemize}
+            \item PMK: pairwise master key.
+            \item Anonce: random number generated in the AP.
+            \item Snonce: random number generated in the Station.
+            \item Auth MAC: MAC address of the autenticating entity.
+            \item Sup MAC: MAC address of the authenticated entity.
+        \end{itemize}
+
+        The PTK is 512 bits long and it contains trhee 128 bits keys: KCK, KEK,
+        TK. \\
+
+        Group key handshake: establish key for multicast traffic.
+
+    \item Protected data transfer: between station and AP. Two protocols studied:
+
+        \begin{itemize}
+            \item WPA: TKIP (temporal key integrity protocol). It uses 64 bit MIC
+                (message integrity code) for integrity and RC4 for
+                confidentiality. TKIP is designed as a wrapper for WEP. It can
+                be implemented in software and can reuse existing WEP hardware.
+                The improvements are:
+
+                \begin{table}[H]
+                \centering
+                \begin{tabular}{|p{4cm}|p{10cm}|}
+                \hline
+                \multicolumn{1}{|c|}{Purpose} & \multicolumn{1}{c|}{Change} \\ \hline
+                Message Integrity & Add a message integrity protocol to prevent tampering that can be implemented in software on a low-power microprocessor. \\ \hline
+                IV selection and use & Change the rules for how initialization vector values are selected and reuse the initialization vector as a replay counter. \\ \hline
+                Per-Packet Key Mixing & Change the encryption key for every frame. \\ \hline
+                IV Size & Increase the size of the IV to avoid ever reusing the same initialization vector \\ \hline
+                Key Management & Add a mechanism to distribute and change the broadcast keys. \\ \hline
+                \end{tabular}
+                \end{table}
+
+                It wraps WEP with three elements: MIC, function for low bandwith
+                CPU, essentially a 64 bit has funciton. Longer IV for RC4
+                function, it is based on the TK that is different for each
+                connection. Per paket key mixing, is a mechanism to derive a key
+                for each paket.
+
+            \item WPA2: CCMP (counter mode-CBC MAC protocol). It uses AES-128 in
+                CBC-MAC mode for integrity and AES-128 in CRT mode for
+                confidentiality.
+        \end{itemize}
+
+    \item Connection end: secure connection discarded, go back to original state.
+\end{enumerate}
+
+Personal WPA and WPA2 can be attacked using a dictionary attack. Success depends
+on the randomness and size. An other problem is that there is a different PTK per
+client so it requires a different attack per client (but once known the PSK is
+trivial) so it is required to capture a client association packet. Enterprise
+WPA and WPA2 can be attacked using impersonation attack. PEAP (protected
+extensible authentication protocol) and EAP-TTLS (tunneled TLS). It could also
+suffer a DoS attack or a downgrade to WEP attack.

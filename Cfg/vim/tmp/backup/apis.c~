@@ -1,0 +1,84 @@
+// P-threads.
+pthread_t tid;
+pthread_attr_t attr;
+int detachstate = PTHREAD_CREATE_DETACHED || PTHREAD_CREATE;
+
+int pthread_create(pthread_t tid, pthread_attr_t attr, void * func,void *func_args);
+int pthread_attr_init(pthread_attr_t *attr);
+int pthread_attr_destroy(pthread_attr_t *attr);
+int pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate);
+int pthread_exit(pthread_t *tid);
+int pthread_join(pthread_t tid, void **value);
+
+// Mutex.
+pthread_mutex_t muttex;
+pthread_mutexattr_t attr;
+pthread_cond_t cond;
+pthread_condattr_t cattr;
+
+int pthread_mutex_init(pthread_mutex_t *mutex, pthread_mutexattr_t attr);
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
+
+int pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cattr);
+int pthread_cond_destroy(pthread_cond_t *cond);
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);
+int pthread_cond_signal(pthread_cond_t *cond);
+int pthread_cond_broadcast(pthread_cond_t *cond);
+
+// Colas de mensajes.
+mqd_t mqd;
+struct mq_attr {
+    long mq_flags;    // Flags: 0 or O_NONBLOCK 
+    long mq_maxmsg;   // Max. # of messages on queue 
+    long mq_msgsize;  // Max. message size (bytes) 
+    long mq_curmsgs;  // # of messages currently in queue 
+} attr;
+
+mqd_t mq_open(char *name, // Nombre de la cola.
+    int flags,            // Como archivos: O_CREAT|O_RDONLY|O_WRONLY|O_RDWR|O_NONBLOCK.
+    int mode,             // Permisos de acceso.
+    struct mq_attr *attr
+);
+int mq_close(mqd_t mqd);
+int unlink(char *name);
+int mq_setattr(mqd_t mqd, struct mq_attr *attr, struct mq_attr *oldattr);
+int mq_getattr(mqd_t mqd, struct mq_attr *attr);
+int mq_send(mqd_t mqd, const char *msg, int msglen);
+int mq_receive(mqd_t mqd, char *msg, int msglen, unsigned int *prio);
+
+// Sockets.
+struct in_addr {
+    unsigned long s_addr; // Cargar con inet_aton()
+} addr;
+
+struct sockaddr_in {
+    short          sin_family; // AF_UNIX|AF_INET|AF_INET6.
+    in_port_t      sin_port;   // htons(puerto).
+    struct in_addr sin_addr;
+    unsigned char  sin_zero[8];
+} socket;
+
+int inet_aton(const char *address, struct in_addr addr);
+char *inet_ntoa(struct in_addr addr);
+unsigned long htonl(unsigned long hostlong);
+unsigned short htons(unsigned short hostshort);
+unsigned long ntohl(unsigned long netlong);
+unsigned short ntohs(unsigned short netshort);
+int socket(int family, // AF_UNIX|AF_INET|AF_INET6.
+    int type,          // SOCK_STREAM|SOCK_DGRAM|SOCK_RAW.
+    int protocol       // Siempre a 0, because reasons.
+);
+int bind(int sockd, struct sockaddr *socket, socklen_t socketlen);
+int close(int sockd);
+int shutdown(int sockd, int mode); // mode = SHUT_RD|SHUT_WR|SHUT_RDWR
+
+// TCP
+int listen(int sockd, int maxconn);
+int accept(int sockd, struct sockaddr *newsocket, socketlen_t *newsocketlen);
+int connect(int sockd, const struct sockaddr *targetsocket, socketlen_t targetsocketlen);
+
+// UDP
+int sendto(int sockd, const void *buffer, size_t bufferlen, int flags, const struct sockaddr *target, socklen_t targetlen);
+int receivefrom(int sockd, void *buffer, size_t bufferlen, int flags, struct sockaddr *target, socklen_t targetlen);

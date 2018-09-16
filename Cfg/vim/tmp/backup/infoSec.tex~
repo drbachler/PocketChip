@@ -1,0 +1,13 @@
+\documentclass[11pt,twoside,a4paper]{report}
+\usepackage{style}
+
+\begin{document}
+\tableofcontets
+\newpage
+\input{tex/27k.tex} % Unfinished
+\end{document}
+
+% We insert the table of contents of the document.
+% \tableofcontents
+% \newpage
+% \input{./chapter/chapter_1} \newpage % Unfinished

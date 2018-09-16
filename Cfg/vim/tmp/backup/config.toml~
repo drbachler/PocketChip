@@ -1,0 +1,40 @@
+languageCode = "en-en"
+title = "Graphic Waste"
+theme = "after-dark"
+baseurl = "https://igrigar.github.io/"
+
+# Define where the contents are.
+contentdir = "content"
+layoutdir = "layouts"
+publishdir = "igrigar.github.io"
+
+buildDrafts = false # I don't want drafts to be rendered in 'production'.
+buildFuture = false # I don't want future posts to be rendered in 'production'.
+
+canonifyurls = true
+
+disable404 = false # We want a 404 page as cool as possible.
+paginate = 10 # Number of posts to be displayed in each page.
+footnoteReturnLinkContents = "↩" # Provides a nicer footnote return link.
+
+[params]
+    description = "Insert a description as shitty as possible here"
+
+[taxonomies]
+    category = "categories"
+    tag = "tags"
+
+SectionPagesMenu = "main" # Menu thing.
+[menu]
+    [[menu.main]]
+        name = "Home"
+        weight = 1
+        url = "/"
+#    [[menu.main]]
+#        name = "Resume"
+#        weight = 2
+#        url = "/resume/"
+    [[menu.main]]
+        name = "About"
+        weight = 3
+        url = "/about/"

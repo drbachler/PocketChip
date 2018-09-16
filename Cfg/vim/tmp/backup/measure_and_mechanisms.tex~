@@ -1,0 +1,221 @@
+\section*{Measures and security mechanisms on mobile devices}
+\addcontentsline{toc}{section}{Measures and security mechanisms on mobile devices}
+
+\textbf{Security measure}: functionality included in a system in order to
+improve its security. The purpose is to reduce the risk related to an asset in a
+specific setting. Security measures are:
+
+\begin{multicols}{2}
+    \textbf{Depending on the way they act}:
+
+    \begin{itemize}
+        \item Prevention (firewall, user knowledge, ...)
+        \item Detection (intrusion detection systems, audits, ...)
+        \item Correction (security updates, ...)
+        \item Recovery.
+    \end{itemize}
+    ~\\ % Igualando las columnas.
+    ~\\ % Igualando las columnas.
+    ~\\ % Igualando las columnas.
+    ~\\ % Igualando las columnas.
+    ~\\ % Igualando las columnas.
+    ~\\ % Igualando las columnas.
+
+    \textbf{Depending on the scope}:
+    \begin{itemize}
+        \item Legal.
+        \item Organizational.
+        \item Physical.
+        \item Technical:
+            \begin{itemize}
+                \item Identification and Authentication.
+                \item Access control.
+                \item Confidentiality.
+                \item Integrity.
+                \item Non repudiation.
+                \item Traceability.
+            \end{itemize}
+    \end{itemize}
+\end{multicols}
+
+\textbf{Security mechanism}: physical or logical implementation of a measure
+used to counteract an attack. Each security service is orchestrated by a
+security mechanism (encryption, digital signature, access control, traffic
+padding, ...) [ISO/IEC (7498-2, 1988)]
+
+\subsection*{Identification and Authentication}
+\addcontentsline{toc}{subsection}{Identification and Authentication}
+
+\begin{itemize}
+    \item Something user knows: passcode or graphical pattern.
+        \underline{Vulnerabilities}: fingerprints in the screen, does not
+        protect from SD disposal, shoulder surfing.
+
+    \item Something user has: proximity token, smart lock (Android $ \ge $ 5;
+        Bluetooth, NFC, GPS location, ...)
+
+    \item Something user is: facial recognition, fingerprint.
+\end{itemize}
+
+\subsection*{Access control}
+\addcontentsline{toc}{subsection}{Access control}
+
+Developers grant capabilities, should follow the least privilege principle but
+it makes development more difficult. Permissions are defined for component
+interaction. Andorid's case, permissions are defined in the
+\texttt{Manifest.xml}, when permissions are granted, they can not be revoked
+unless application is uninstalled. Initially permissions were granted during
+app's installation, there are malicious apps that abuse from this model. From
+\texttt{Marshmallow} on the normal permissions (those that would not risk user's
+privacy) are granted automatically, permissions with grater risk are requested
+on runtime and can be denied (this may cause app failure).
+
+\subsection*{Confidentiality}
+\addcontentsline{toc}{subsection}{Confidentiality}
+
+\textbf{iOS} uses a cryptographic encryption engine with AES256. It uses UID
+(device unique identifier) and GID (device group identifier) as keys, GID is
+unique to a group of processors of the same class. Both keys are embedded in the
+secure enclave during the manufacturing and they can't be read.\\
+
+When a file is created in data partition a ``\textit{file key}'' is generated
+(256 bits). At hardware level a ``\textit{class key}'' is generated, each file
+belongs to a class (with an associated key). The file is then encrypted with the
+\textit{file key}. After that the \textit{file key} is encrypted using the
+\textit{class key} and added to the metadata of the file. Finally the metadata
+is encrypted using a key common to the whole filesystem.
+
+\begin{figure}[H]
+    \centering
+    \input{./fig/iOS_file_enc.tex}
+    \caption{iOS file encryption scheme}
+\end{figure}
+
+When a file is opened, metadata are decrypted with the ``\textit{file system
+key}'' and the ``\textit{file key}'' is recovered. Then ``\textit{file key}'' is
+decrypted with the ``\textit{class key}''. Finally the decrypted is ``\textit{
+file key}'' is used to decrypt the file. The ``\textit{class key}'' is encrypted
+at hardware level with the UID and/or PIN (depending on the class). The
+``\textit{filesystem key}'' is created during iOS installation or after wipe, it
+derives from the UID. Data protection is enabled after the activation of the
+passcode. \\
+
+Developers assign files calsses, if no class is defined a default one is used.
+There are different protection classes:
+
+\begin{itemize}
+    \item Class no protection: the class key is only protected with the UID.
+        Every decryption is stored in the device. Is the by default class.
+    \item Class protected until first user authentication: behaves in the same
+        way as complete protection class. The decrypted class key is not removed
+        from the memory when the device is loked. Protects against attacks that
+        demand reboot. Is the default class for third party apps.
+    \item Class protected unless opened: allows writting when the device is
+        locked. Uses symetric cryptography, the public key is stored in metadata
+        and the private one is encrypted with the passcode and the UID. When the
+        file is closed the key is erased from memory.
+    \item Comlpete protection class: class key protected with a key derived from
+        the passcode and UID. The decrypted class is erased from memory. Data is
+        not accessible until the passcode is typed.
+\end{itemize}
+
+\textbf{Android} has no encyption enabled by default. Encryption depends on the
+passcode, from it a symetric key is derived. The symetric key is used to encrypt
+the master key, which is the one that actually encrypts the disk with AES-128.
+Key chain is based on hardware. From version 7 (\texttt{Marshmellow}) on, two
+encryption options are provided: full disk encryption (as in previous versions)
+and per file encryption (similar to iOS).
+
+\section*{Security mechanisms}
+\addcontentsline{toc}{section}{Security mechanisms}
+
+\subsection*{Process sandboxing}
+\addcontentsline{toc}{subsection}{Process sandboxing}
+
+\textbf{iOS} Isolating processes, each application has its own unique directory
+for its file randomly assigned. An app can not scale privileges to modify other
+apps. Limit the access of each app to the system data, all OS partition is
+``read only''. Memory protection, two main parts: ASLR (address space layout
+randomization) protects against memory corruption and makes it difficult to
+infer process memory addresses, DEP (data execution prevention) ARM's execute
+never (XN) marks memory pages as non executable and writable and executable
+pages can only be accessed by apps with authenticated capabilities. Most apps
+(all $ 3^{rd} $ party) run as ``mobile'' unprivileged user can't neither install
+drivers nor escalate privileges. This technique prevents exploitations in one
+app affect the system, prevents from viruses and rootkits. \\
+
+\textbf{Android} Linux kernel, so user oriented permission model. When an app is
+installed, Android assigns UID and GID, different in each device, data
+structures linked to this UID and GID can be only accessed by the app and root.
+Apps from the same developer can share UID.
+
+\subsection*{Remote wipe and localization}
+\addcontentsline{toc}{subsection}{Remote wipe and localization}
+
+\textbf{iOS} It can only be done if the mobile is ``ON'' and with an internet
+connection. It requires that the setting ``\textit{Search my phone}'' is
+enabled. \\
+
+\textbf{Android} It can only be done if the device is ``ON'' and it's SIM is
+active, a factory reset is done, all de data is wiped and the master key is
+erased. Kill switch, Android Market Business Policies:
+
+\begin{quote}
+``Product Removals: From time to time, Google may discover a Product on the Market
+that violates the Android Market Developer Distribution Agreement or other legal
+agreements, laws, regulations or policies. In such an instance, Google retains
+the right to remove those applications from your Device remotely, at its sole
+discretion. If that occurs, Google will make reasonable efforts to recover the
+purchase price of the Product, if any, from the originating Developer on your
+behalf. If Google is unable to recover the full amount of the purchase price, it
+will divide any recovered amounts between the affected users on a pro rata
+basis.''
+\end{quote}
+
+\subsection*{Backup}
+\addcontentsline{toc}{subsection}{Backup}
+
+\textbf{iOS} It can be done automatically and wireless through \texttt{iCloud}
+or manually through \texttt{iTunes}. \\
+
+\textbf{Android} It can be done automatically and wireless (manufacturer
+dependent) or through \texttt{adb}.
+
+\subsection*{Origin of applications}
+\addcontentsline{toc}{subsection}{Origin of applications}
+
+\textbf{iOS} All applications are verified by Apple. Developers sign their apps
+with a certificate provided by Apple. An annual fee must be payed to be a
+developer (\$99), there is only one (legit) app market. No modifications allowed
+after de installation. iOS update process does not allow to install previous
+versions (may be vulnerable).
+
+\begin{figure}[H]
+    \centering
+    \input{./fig/iOS_update.tex}
+\end{figure}
+
+\begin{itemize}
+    \item ECID: exclusive chip ID, 64 bits, unique to each device.
+    \item NONCE: number used only once.
+    \item LLB: low level bootloader.
+    \item Kernel: main part of the OS.
+    \item XNU: hybrid kernel, containing features of both monolithic kernels and
+        micro kernels.
+    \item iBoot: code loaded by LLB, besides load the XNU as secure boot.
+    \item OS image: operating system image
+\end{itemize}
+
+\textbf{Android} Installation of signed applications only. It accepts
+auto-signed apps with any name, no CA required. System (and its apps) update is
+a harder process since more parties may be involved (Google, producer,
+operator).
+
+\subsection*{Malware}
+\addcontentsline{toc}{subsection}{Malware}
+
+App revision process is not public, so you never really know. You may find
+``Trojanized'' apps in unofficial markets (repackaging). Dangerous permissions
+are carelessly granted (E.g send SMS). Some typical baits are: free premium apps,
+apps that were once in Google's Play Store, fake apps that are only in iOS.
+Malware analysis can be static (check the code) or dynamic (emulated environment).

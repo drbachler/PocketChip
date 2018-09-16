@@ -1,0 +1,91 @@
+# Here some aliases and functions that may be useful.
+
+# Create the tree of directories if needed.
+alias mkdir='mkdir -pv'
+
+function decrypt {
+    openssl enc -aes-256-cbc -d -in $1 | less
+}
+
+# Generate a strong password:
+# -a 1: random character password generation
+# -n 10: print 10 password candidates,
+# -m 15 -x 20: minimum and maximum password length.
+# -M SNCL: the password must contain special chars, mayus, numbers and minus
+# -c $(): random seed using opens ssl.
+function pwgen {
+    apg -a 1 -n 10 -m 15 -x 20 -M SNCL -c $(openssl rand 1000)
+}
+
+# Extract compressed files.
+function extract {
+  if [ -z "$1" ]; then
+    # display usage if no parameters given
+    echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+  else
+    if [ -f $1 ] ; then
+        case $1 in
+          *.tar.bz2)   tar xvjf $1    ;;
+          *.tar.gz)    tar xvzf $1    ;;
+          *.tar.xz)    tar xvJf $1    ;;
+          *.lzma)      unlzma $1      ;;
+          *.bz2)       bunzip2 $1     ;;
+          *.rar)       unrar x -ad $1 ;;
+          *.gz)        gunzip $1      ;;
+          *.tar)       tar xvf $1     ;;
+          *.tbz2)      tar xvjf $1    ;;
+          *.tgz)       tar xvzf $1    ;;
+          *.zip)       unzip $1       ;;
+          *.Z)         uncompress $1  ;;
+          *.7z)        7z x $1        ;;
+          *.xz)        unxz $1        ;;
+          *.exe)       cabextract $1  ;;
+          *)           echo "extract: '$1' - unknown archive method" ;;
+        esac
+    else
+        echo "$1 - file does not exist"
+    fi
+  fi
+}
+
+# Update the system.
+function update {
+  sudo apt update -y
+  sudo apt dist-upgrade -y
+  sudo apt autoremove -y
+  sudo deborphan | xargs sudo apt-get remove -y --purge
+  sudo apt autoclean -y
+}
+
+# Turn touchpad on and off.
+function touchpad {
+  if [ -z "$1" ]; then
+    echo "Usage: touchpad <on|off>"
+  else
+    if [ "$1" = "off" ]; then
+      sudo modprobe -r psmouse
+    elif [ "$1" = "on" ]; then
+      sudo modprobe psmouse
+    else
+      echo "$1 - Not a valid ption"
+    fi
+  fi
+}
+
+# Creates an archive (*.tar.gz) from given directory.
+function maketar {
+  tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"
+}
+
+# Create a ZIP archive of a file or folder.
+function makezip {
+  zip -r "${1%%/}.zip" "$1"
+}
+
+# Show the colour pallete of a 256 colured terminal.
+# Usefull when creating custom colorschemes.
+function pallete {
+    for i in {0..255}; do
+        printf "\x1b[38;5;${i}m ━━━━ ${i}\x1b[0m\n"
+    done
+}

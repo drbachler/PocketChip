@@ -1,0 +1,13 @@
+\documentclass[a4paper, 10pt, twoside]{report}
+
+\usepackage{style}
+
+\renewcommand\thesection{Tema \Roman{section}}
+\renewcommand\thesubsection{\arabic{subsection}}
+
+\begin{document}
+    \tableofcontents
+    \newpage
+
+    \input{tex/tema1.tex}
+\end{document}

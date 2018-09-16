@@ -9,6 +9,8 @@
 
 set -eou pipefail
 
+TMP_INSTALL_DIR = $HOME/install_tmp
+
 # Function declaration.
 function local_sources() {
     APT_REPO="1W77d5naX4qQfYYg6HnF_lT2z53Q5w8AJ"
@@ -25,7 +27,7 @@ function local_sources() {
     sudo echo "deb ftp://127.0.0.1/opensource.nextthing.co/chip/debian/repo jessie main" >> /etc/apt/sources.list
     sudo echo -e "<Anonymous ~ftp>\n\tUser ftp\n\tGroup nogroup\n\tUserAlias anonymous ftp\n\tRequireValidShell off\n\t<Directory *>\n\t\t<Limit WRITE>\n\t\t\tDenyAll\n\t\t</Limit>\n\t</Directory>\n</Anonymous>" >> /etc/proftpd/conf.d/anonymous.conf 
     sudo service proftpd restart
-    cd ~
+    cd $HOME
 }
 
 function remote_sources() {
@@ -33,14 +35,13 @@ function remote_sources() {
     echo "deb http://chip.jfpossibilities.com/chip/debian/pocketchip jessie main" | sudo tee -a /etc/apt/sources.list
 }
 
-
 function kill_x() {
     echo "Say bye to graphical mode!"
 
     sudo systemctl set-default multi-user.target
-    mkdir ~/.local/share/keymaps
-    echo -e "keymaps 0-2,4-5,8,12\naltgr keycode  2 = F1\naltgr keycode  3 = F2\naltgr keycode  4 = F3\naltgr keycode  5 = F4\naltgr keycode  6 = F5\naltgr keycode  7 = F6\naltgr keycode  8 = F7\naltgr keycode  9 = F8\naltgr keycode 10 = F9\naltgr keycode 11 = F10\naltgr keycode 74 = F11\nshift keycode 74 = underscore\naltgr keycode 13 = F12\naltgr keycode 21 = braceleft\naltgr keycode 22 = braceright\naltgr keycode 23 = bracketleft\naltgr keycode 24 = bracketright\naltgr keycode 25 = bar\naltgr keycode 35 = less\naltgr keycode 36 = greater\naltgr keycode 37 = apostrophe\naltgr keycode 38 = quotedbl\naltgr keycode 48 = grave\naltgr keycode 49 = asciitilde\naltgr keycode 50 = colon\naltgr keycode 52 = semicolon\nshift keycode 52 = comma\naltgr keycode 53 = backslash\n" > ~/.local/share/keymaps/key_map
-    sudo loadkeys ~/.local/share/keymaps/key_map
+    mkdir $HOME/.local/share/keymaps
+    echo -e "keymaps 0-2,4-5,8,12\naltgr keycode  2 = F1\naltgr keycode  3 = F2\naltgr keycode  4 = F3\naltgr keycode  5 = F4\naltgr keycode  6 = F5\naltgr keycode  7 = F6\naltgr keycode  8 = F7\naltgr keycode  9 = F8\naltgr keycode 10 = F9\naltgr keycode 11 = F10\naltgr keycode 74 = F11\nshift keycode 74 = underscore\naltgr keycode 13 = F12\naltgr keycode 21 = braceleft\naltgr keycode 22 = braceright\naltgr keycode 23 = bracketleft\naltgr keycode 24 = bracketright\naltgr keycode 25 = bar\naltgr keycode 35 = less\naltgr keycode 36 = greater\naltgr keycode 37 = apostrophe\naltgr keycode 38 = quotedbl\naltgr keycode 48 = grave\naltgr keycode 49 = asciitilde\naltgr keycode 50 = colon\naltgr keycode 52 = semicolon\nshift keycode 52 = comma\naltgr keycode 53 = backslash\n" > $HOME/.local/share/keymaps/key_map
+    sudo loadkeys $HOME/.local/share/keymaps/key_map
 }
 
 function build_retroarch() {
@@ -56,34 +57,20 @@ function build_retroarch() {
 }
 
 function install_retroarch() {
-    rm -f obj-unix/release/git_version.o
-    mkdir -p /usr/local/bin 2>/dev/null || /bin/true
-    mkdir -p /etc 2>/dev/null || /bin/true
-    mkdir -p /usr/local/share/applications 2>/dev/null || /bin/true
-    mkdir -p /usr/local/share/doc/retroarch 2>/dev/null || /bin/true
-    mkdir -p /usr/local/share/man/man6 2>/dev/null || /bin/true
-    mkdir -p /usr/local/share/pixmaps 2>/dev/null || /bin/true
+    cd TMP_INSTALL_DIR
     cp retroarch /usr/local/bin
-    cp tools/cg2glsl.py /usr/local/bin/retroarch-cg2glsl
-    cp retroarch.cfg /etc
-    cp retroarch.desktop /usr/local/share/applications
-    cp docs/retroarch.6 /usr/local/share/man/man6
-    cp docs/retroarch-cg2glsl.6 /usr/local/share/man/man6
-    cp media/retroarch.svg /usr/local/share/pixmaps
-    cp COPYING /usr/local/share/doc/retroarch
-    cp README.md /usr/local/share/doc/retroarch
+    cp cg2glsl.py /usr/local/bin/retroarch-cg2glsl
     chmod 755 /usr/local/bin/retroarch
     chmod 755 /usr/local/bin/retroarch-cg2glsl
-    chmod 644 /etc/retroarch.cfg
-    chmod 644 /usr/local/share/applications/retroarch.desktop
-    chmod 644 /usr/local/share/man/man6/retroarch.6
-    chmod 644 /usr/local/share/man/man6/retroarch-cg2glsl.6
-    chmod 644 /usr/local/share/pixmaps/retroarch.svg
+    mkdir $HOME/.config/retroarch
+    mv cfg/* $HOME/.config/retroarch
+    mv ROM $HOME
+    cd $HOME
 }
 
 echo "Deleting default dirs"
 
-cd ~
+cd $HOME
 rm -rf Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos
 
 echo "Remove power saving on Wi-Fi"
@@ -119,7 +106,7 @@ libi2c-dev libssl-dev xinput-calibrator ssh libsdl1.2-dev vim locales kbd \
 libsdl2-dev libboost-system-dev libboost-filesystem-dev libboost-date-time-dev \
 libfreeimage-dev libfreetype6-dev libeigen3-dev libcurl4-openssl-dev \
 libgl1-mesa-dev cmake pkg-config rsync minicom pulseaudio-module-bluetooth \
-blueman
+blueman libxext-dev
 
 echo "General config"
 
@@ -130,18 +117,53 @@ sudo usermod -a -G dialout $USER
 sudo chown -R chip /etc/minicom
 sudo sed -i 's/exit 0/sudo systemctl stop serial-getty@ttyS0\nexit 0/g' /etc/rc.local
 
-echo "Installing PocketHome"
-
-wget -O /tmp/pocket_home.deb https://github.com/igrigar/PocketChip/blob/master/pocket-home_0.0.8.9-1_armhf.deb?raw=true
-
-mkdir -p ~/.pocket-home/
-echo "0.8.9-1" > ~/.pocket-home/.version
-sudo dpkg -i /tmp/pocket_home.deb
-
 echo "Reconfiguring locales"
 
 sudo dpkg-reconfigure locales           # if in the USA, select "en_US" locales.
 sudo dpkg-reconfigure tzdata            # select your timezone
+
+echo "Installing new terminal"
+
+git clone git://git.suckless.org/st
+cd st
+sed -i 's/Liberation Mono/Monospace/g' config.def.h
+sed -i 's/pixelsize=12/pixelsize=10/g' config.def.h 
+sed -i 's/\/bin\/sh/\/bin\/bash/g' config.def.h
+sudo make clean install
+cd $HOME
+
+echo "Downloading all the stuff!"
+
+mkdir $TMP_INSTALL_DIR
+cd $TMP_INSTALL_DIR
+git init
+git remote add -f origin https://github.com/igrigar/PocketChip.git
+git config core.sparseCheckout true
+
+echo "pocket-home_0.0.8.9-1_armhf.deb" >> .git/info/sparse-checkout
+echo "Cfg" >> .git/info/sparse-checkout
+echo "RetroArch" >> .git/info/sparse-checkout
+echo "Icons" >> .git/info/sparse-checkout
+
+git pull origin master
+cd $HOME
+
+echo "Installing PocketHome"
+
+mkdir -p $HOME/.pocket-home/
+echo "0.8.9-1" > $HOME/.pocket-home/.version
+sudo dpkg -i $TMP_INSTALL_DIR/pocket-home_0.0.8.9-1_armhf.deb
+
+echo "Setting configurations"
+
+cp $TMP_INSTALL_DIR/Cfg/bash_aliases $HOME/.bash_aliases
+cp $TMP_INSTALL_DIR/Cfg/bashrc $HOME/.bashrc
+cp $TMP_INSTALL_DIR/Cfg/vimrc $HOME/.vimrc
+cp -a $TMP_INSTALL_DIR/Cfg/vim $HOME/.vim
+
+mkdir -p $HOME/.pocket-home/icons
+cp $TMP_INSTALL_DIR/Cfg/config.json $HOME/.pocket-home
+cp $TMP_INSTALL_DIR/Icons/* $HOME/.pocket-home/icons
 
 while true; do
     read -p "Do you want to boot diirectly in text mode?[y/n]" answer
@@ -160,3 +182,5 @@ while true; do
         * ) echo "Please answer yes or no.";
     esac
 done
+
+rm -rf $TMP_INSTALL_DIR

@@ -1,0 +1,92 @@
+%% start of file `template.tex'.
+%% Copyright 2006-2013 Xavier Danaux (xdanaux@gmail.com).
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License version 1.3c,
+% available at http://www.latex-project.org/lppl/.
+
+
+\documentclass[11pt,a4paper,sans]{moderncv}        % possible options include font size ('10pt', '11pt' and '12pt'), paper size ('a4paper', 'letterpaper', 'a5paper', 'legalpaper', 'executivepaper' and 'landscape') and font family ('sans' and 'roman')
+
+% moderncv themes
+\moderncvstyle{classic}                             % style options are 'casual' (default), 'classic', 'oldstyle' and 'banking'
+\moderncvcolor{green}                               % color options 'blue' (default), 'orange', 'green', 'red', 'purple', 'grey' and 'black'
+%\renewcommand{\familydefault}{\sfdefault}         % to set the default font; use '\sfdefault' for the default sans serif font, '\rmdefault' for the default roman one, or any tex font name
+%\nopagenumbers{}                                  % uncomment to suppress automatic page numbering for CVs longer than one page
+
+% character encoding
+\usepackage[utf8]{inputenc}                       % if you are not using xelatex ou lualatex, replace by the encoding you are using
+%\usepackage{CJKutf8}                              % if you need to use CJK to typeset your resume in Chinese, Japanese or Korean
+
+% adjust the page margins
+\usepackage[scale=0.75]{geometry}
+%\setlength{\hintscolumnwidth}{3cm}                % if you want to change the width of the column with the dates
+%\setlength{\makecvtitlenamewidth}{10cm}           % for the 'classic' style, if you want to force the width allocated to your name and avoid line breaks. be careful though, the length is normally calculated to avoid any overlap with your personal info; use this at your own typographical risks...
+
+% personal data
+\name{Ignacio}{Ripoll}
+\title{Curriculum Vitae}                               % optional, remove / comment the line if not wanted
+\address{Avda. Donostiarra, 19, 12, 2}{28027}{Madrid, España}% optional, remove / comment the line if not wanted; the "postcode city" and and "country" arguments can be omitted or provided empty
+\phone[mobile]{+34~691~661~931}                   % optional, remove / comment the line if not wanted
+%\phone[fixed]{+2~(345)~678~901}                    % optional, remove / comment the line if not wanted
+%\phone[fax]{+3~(456)~789~012}                      % optional, remove / comment the line if not wanted
+\email{igrigar@protonmail.com}                               % optional, remove / comment the line if not wanted
+%\homepage{www.johndoe.com}                         % optional, remove / comment the line if not wanted
+%\extrainfo{additional information}                 % optional, remove / comment the line if not wanted
+\photo[64pt][0.4pt]{pic}                       % optional, remove / comment the line if not wanted; '64pt' is the height the picture must be resized to, 0.4pt is the thickness of the frame around it (put it to 0pt for no frame) and 'picture' is the name of the picture file
+%\quote{Some quote}                                 % optional, remove / comment the line if not wanted
+
+\begin{document}
+%-----       resume       ---------------------------------------------------------
+\makecvtitle
+
+\section{Educación}
+\cventry{2010--2012}{Bachillerato}{Colegio Nuevo Equipo}{Madrid}{\textit{}}{}
+\cventry{2012--Actual}{Grado Ingeniería Informática}{Universidad Carlos III}{Madrid}{\textit{4º}}{Estancia Erasmus durante 5 meses en la universidad TU Wien, Viena, Austria}
+
+\section{Experiencia}
+
+\cventry{2016--2016}{Atención usuario}{Biblioteca Universidad Carlos III}{Madrid}{}{Atención al usuario en el
+mostrador de la planta baja en la biblioteca del campus de Leganés de la universidad Carlos III de Madrid.}
+
+\section{Idiomas}
+\cvitemwithcomment{Español}{Lengua materna}{}
+\cvitemwithcomment{Inglés}{B2}{Nivel B2 certificado por la universidad de Cambridge.}
+\cvitemwithcomment{Alemán}{A1/2}{Nivel acreditable a través de un certificado no oficial emitido por la universidad TU Wien.}
+
+\section{Habilidades informáticas}
+
+\subsection{Lenguajes de programación}
+
+\cvdoubleitem{C/C++}{Medio}{Python}{Medio}
+\cvdoubleitem{Java}{Medio}{Matlab}{Básico}
+\cvdoubleitem{Bash}{Alto}{HTML/CSS}{Alto}
+\cvdoubleitem{JavaScript}{Básico}{PHP}{Básico}
+
+\subsection{Herramientas}
+
+\cvitem{Vim}{Amplio conocimiento en el uso del editor de textos Vim}
+\cvitem{IDEs}{Manejo de los entornos de desarrollo para el lenguaje de programación Java tales como Eclipse e IntelliJ.}
+
+\subsection{Otras habilidades}
+\cvitem{Redes}{Conocimiento en el despliegue de redes de ordenadores..}
+\cvitem{Sistemas}{Conocimiento en administración de sistemas GNU/Linux.}
+\cvitem{Documentación}{Conocimiento en los lenguajes de edición de texto Latex y Markdown.}
+
+\section{Intereses}
+\cvitem{Deportes}{Natación, ciclismo, senderismo.}
+\cvitem{Scouts}{Monitor del grupo scout Águila.}
+\cvitem{IoT}{Desarrollo de software para microcontroladores de la familia AtMega (Arduino)
+y otros como ESP8266.}
+
+\section{Varios}
+\cvitem{Conferencias}{Asistente habitual a las conferencias: \newline
+\begin{itemize}
+	\item FOSDEM: ULB Campus Solbosch, Bruselas, Bélgica.
+	\item T3chFest: UC3M, Leganés, Madrid.
+	\item Jornadas técnicas del GUL: UC3M, Leganés, Madrid.
+\end{itemize}}
+\cvitem{Concursos}{Tercer puesto en la \textit{Hackathon} que tuvo lugar en el año 2016 con motivo
+del T3chFest en el campus de Leganés de la Universidad Carlos III de Madrid.}
+
+\end{document}

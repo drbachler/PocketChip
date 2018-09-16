@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static const unsigned char _base64 [65] = {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+    'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
+    'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+    't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7',
+    '8', '9', '+', '/'
+};
+
+
+int main(int argc, char *argv[]) {
+
+    if (argc != 2) {
+        printf("Usage: ./hex2base64 <hex string>\n");
+        return -1;
+    }
+
+    long b64_len, hex_len, b10;
+    unsigned char *b64, *hex;
+
+    if ((hex_len = strlen(argv[1])) % 2) {
+        printf("<hex string> must have an even number of characters.\n");
+        return -1;
+    }
+
+    hex = (unsigned char *) malloc(++hex_len);
+    memset(hex, '\0', hex_len);
+    memcpy(hex, argv[1], hex_len);
+
+    b64_len = 5;
+    b64 = (unsigned char *) malloc(++b64_len);
+    memset(b64, '\0', b64_len);
+
+    b10 = strtol((const char *) hex, NULL, 16);
+    printf("%ld\n", b10);
+    
+    while (b10/64) {
+        printf("%c", _base64[b10%64]);
+        b10 /= 64;
+    }
+    
+    printf("\n");
+
+    free(b64);
+    free(hex);
+
+
+    return 0;
+}

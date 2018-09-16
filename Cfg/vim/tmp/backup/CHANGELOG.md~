@@ -1,0 +1,30 @@
+# Changelog for darksimplicity theme
+
+This document will state what changes are made to the original theme and some
+implications those changes have. Changes will be built incrementally, so let's
+say V2 will apply over V1, not necessarily over the original theme.
+
+## Change 1 - 06/10/2017
+
+  * archetypes: default archetypes file is deleted, a custom one willl be used
+    in the root of the page.
+  * exampleSite: the folder is deleted because it becomes useless.
+  * images: the folder it is deleted because it becomes useless.
+  * layouts:
+    * \_default:
+      * list.html: properly indented to enhance readability.
+      * single.html: properly indented to enhance readability.
+    * partials:
+      * disqus.html: deleted. I don't need that kind of functionallity.
+      * footer.html: modified so it does not display text. The default footer
+        with the copyright thing didn't please me, so for now I wont use one.
+      * google_analytics.html: deleted. I don't intend to use google analytics
+        anyway.
+      * pagination.html: properly indented to enhance readability.
+    * rss.xml: deleted. I don't see the point on offering RSS service (for now).
+  * postcss: the folder is deleted because it is useless. I don't know why is
+    still present in the original repo.
+  * public/css: "un-minify", one line for each object to encrease readability.
+  * static/css:
+  * LICENSE.md: it is modified to an other license.
+  * README.md: modified to show the changes.

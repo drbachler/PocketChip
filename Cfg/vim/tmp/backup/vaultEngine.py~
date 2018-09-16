@@ -1,0 +1,202 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
+from getpass import getpass
+from sys import exit
+from time import strftime
+
+from cryptoEngine import cryptoEngine
+
+import json
+
+class vaultEngine:
+    """
+    Small class to encapsulate all the functions related to the password storage.
+    :attribute opList: list operations supported by the class.
+    :attribute vault: unencrypted content of the password file.
+    :attribute password: password to [en|de]crypt the file.
+    :attribute path: full path where the password file is stored.
+    :attribute OK: colour code for green.
+    :attribute WAR: colour code for orange.
+    :attribute ERR: colour code for red.
+    :attribute END: code for ending colour modifications.
+    """
+    
+    def __init__(self, path):
+        self.opList = ['Add service', 'Update service', 'Check service', 'Delete service', 'List services', 'Help']
+        self.path = path
+        
+        self.OK = '\033[92m'
+        self.WAR = '\033[93m'
+        self.ERR = '\033[91m'
+        self.END = '\033[0m'
+        
+    def load(self):
+        """
+        Function to load the password store into memory.
+        """
+        try:
+            cipherText = ''
+            
+            with open(self.path, 'r') as f:
+                cipherText = f.read()
+            
+            self.password = getpass('Please enter your password: ')
+            self.crypto = cryptoEngine(self.password)
+            self.vault = self.crypto.aesDecrypt(cipherText)
+            
+            while self.vault == '':
+                print '[%sERROR%s] Wrong password try again.' % (self.ERR, self.END)
+                
+                self.password = getpass()
+                self.crypto = cryptoEngine(self.password)
+                self.vault = self.crypto.aesDecrypt(cipherText)
+                
+            try:
+                self.vault = json.loads(self.vault)
+            except KeyError:
+                print '[%sERROR%s] File %s does not have JSON format!.' % (self.ERR, self.END, self.path)
+            # Looking for errors in the file.
+            days = [1, 30, 365]
+            curr_time = reduce(lambda x, y: x + y, [int(t) * days[x] for x, t in enumerate(strftime('%d/%m/%Y').split('/'))])
+            
+            for service in self.vault:
+                pass_time = reduce(lambda x, y: x + y, [int(t) * days[x] for x, t in enumerate(self.vault[service]['date'].split('/'))])
+                
+                if not self.crypto.hashCompare(self.vault[service]['mail'], self.vault[service]['hm']):
+                    print '[%sERROR%s] Integrity of %s mail is compromised!' % (self.ERR, self.END, service)
+                if not self.crypto.hashCompare(self.vault[service]['password'], self.vault[service]['hp']):
+                    print '[%sERROR%s] Integrity of %s password is compromised!' % (self.ERR, self.END, service)
+                if abs(pass_time - curr_time) > 365:
+                    print '[%sWARNING%s] The password of %s is too old, it should be changed!' % (self.ERR, self.END, service)
+            
+            print '[%sSUCCESS%s] Vault successfully loaded.' % (self.OK, self.END)
+        except IOError:
+            print '[%sERROR%s] File %s does not exist!.' % (self.ERR, self.END, self.path)
+            print 'Creating file %s.' % self.path
+            
+            json_form = '{\n}'
+            
+            self.password = p1 = getpass('Set a protection password: ')
+            p2 = getpass('Repeat the password:')
+
+            while p1 != p2:
+                print '[%sERROR%s] Those passwords are different.' % (self.ERR, self.END)
+                self.password = p1 = getpass('Set a protection password: ')
+                p2 = getpass('Repeat the password:')
+            
+            self.vault = json.loads(json_form)
+            self.crypto = cryptoEngine(self.password)
+            with open(self.path, 'w') as f:
+                f.write(json_form)
+    
+    def save(self):
+        """
+        Function to save the password store.
+        """
+        
+        with open(self.path, 'w') as f:
+            try:
+                f.write(self.crypto.aesEncrypt(json.dumps(self.vault, indent=4, sort_keys=False)))
+                print '[%sSUCCESS%s] Vault successfully stored.' % (self.OK, self.END)
+            except ValueError:
+                raise ValueError
+    
+    def add(self, update=False):
+        """
+        Function to add a new service based on the <e-mail> + <password> scheme.
+        """
+        
+        service = ''
+        mail = ''
+        passwd = ''
+        
+        service = raw_input('Service name: ')
+        
+        if service in self.vault and not update:
+            print '[%sERROR%s] That service is already registered' % (self.ERR, self.END)
+            return
+        elif service not in self.vault and update:
+            print '[%sERROR%s] That service is not registered' % (self.ERR, self.END)
+            return
+        
+        while True:
+            mail = raw_input('E-mail: ')
+            try:
+                if mail == '':
+                    mail == self.vault[service]['mail']
+            except KeyError:
+                print '[%sERROR%s] A mail address must be typed.' % (self.ERR, self.END)
+                continue
+            
+            if raw_input('Do you want to autogenerate password? [y/N] ') == 'y':
+                pwl = self.crypto.passwordGenerator(20, 16, 24)
+
+                print 'Suggested passwords: '
+                for idx, operation in enumerate(pwl):
+                    print '  [%d] %s' % (idx + 1, operation)
+
+                while True:
+                    try:
+                        passwd = pwl[input('\nPassword: ') - 1]
+
+                        break
+                    except IndexError:
+                        print '[%sERROR%s] The number must be in the range [1, %d].' % (self.ERR, self.END, len(pwl))
+                    except NameError:
+                        print '[%sERROR%s] Type just the number.' % (self.ERR, self.END)
+                    except SyntaxError:
+                        print '[%sERROR%s] Type just the number.' % (self.ERR, self.END)
+            else:
+                passwd = raw_input('Password: ')
+                try:
+                    if passwd == '':
+                        passwd == self.vault[service]['password']
+                except KeyError:
+                    print '[%sERROR%s] A password must be typed.' % (self.ERR, self.END)
+                    continue
+            
+            if raw_input('Are you sure to add those values? [y/N] ') == 'y':
+                break
+            
+        # Compose the entry
+        self.vault[service] = {}
+        self.vault[service]['mail'] = mail
+        self.vault[service]['password'] = passwd
+        self.vault[service]['hm'] = self.crypto.hash(mail)
+        self.vault[service]['hp'] = self.crypto.hash(passwd)
+        self.vault[service]['date'] = strftime('%d/%m/%Y')
+    
+    def check(self):
+        """
+        Check the values stored for a service.
+        """
+        service = raw_input('Service: ')
+        
+        if service not in self.vault:
+            print '[%sERROR%s] That service is not registered' % (self.ERR, self.END)
+            return
+        
+        print '[%s]\n  E-Mail: %s\n  Password: %s' % (service, self.vault[service]['mail'], self.vault[service]['password'])
+    
+    def list(self):
+        """
+        List all the services stored in the password store.
+        """
+        for key in self.vault:
+            print '  + %s' % key
+    
+    def del(self):
+        """
+        Delete an entry from the password store.
+        """
+        try:
+            del self.vault[raw_input('Service: ')]
+        except KeyError:
+            print '[%sERROR%s] That service is not registered' % (self.ERR, self.END)
+    
+    def operation(self):
+        return self.opList
+    
+    def help(self):
+        print 'This is help'

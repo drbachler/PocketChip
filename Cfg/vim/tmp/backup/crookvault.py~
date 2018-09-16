@@ -1,0 +1,54 @@
+#! /usr/bin python
+# -*- coding: utf8 -*-
+
+from os.path import expanduser
+from vaultEngine import vaultEngine
+
+# Full path to the password file.
+vaultPath = expanduser('~') + '/.crookvault.json'
+
+def main():
+    print "\033[34m" \
+    "                      _                      _ _   \n" \
+    "                     | |                    | | |  \n" \
+    "  ___ _ __ ___   ___ | | ____   ____ _ _   _| | |_ \n" \
+    " / __| '__/ _ \ / _ \| |/ /\ \ / / _` | | | | | __|\n" \
+    "| (__| | | (_) | (_) |   <  \ V / (_| | |_| | | |_ \n" \
+    " \___|_|  \___/ \___/|_|\_\  \_/ \__,_|\__,_|_|\__|\n" \
+    "\033[0m"
+
+    vaultEng = vaultEngine(vaultPath)
+    vaultEng.load()
+    op = vaultEng.operation()
+
+    # Main input parsing routine.
+    try:
+        while True:
+            print 'Available operations: '
+            for idx, operation in enumerate(op):
+                print '  [%d] %s' % (idx + 1, operation)
+            
+            o = input('\nOperation: ') - 1 # Get operation code.
+            
+            if o < 0 or o >= len(op):
+                print '[ERROR] Number out of range [%d, %d].'  % (0, len(op))
+            elif op[o] == 'Add service':
+                vaultEng.add()
+            elif op[o] == 'Update service':
+                vaultEng.add(update=True)
+            elif op[o] == 'Check service':
+                vaultEng.check()
+            elif op[o] == 'Delete service':
+                vaultEng.rm()
+            elif op[o] == 'List services':
+                vaultEng.list()
+            elif op[o] == 'Help':
+                vaultEng.help()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        print ''
+        vaultEng.save()
+
+if __name__ == '__main__':
+    main()

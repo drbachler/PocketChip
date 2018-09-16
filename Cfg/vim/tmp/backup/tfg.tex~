@@ -1,0 +1,205 @@
+\documentclass[a4paper, 10pt, conference]{IEEEtran}
+
+%\overrideIEEEmargins
+
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{tabularx,booktabs}
+\usepackage{pifont} % For the check marks in the table
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\title{\LARGE \bf SAR on electronic voting schemes and technologies}
+\author{Ignacio Ripoll}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+\begin{abstract}
+The objective of this document is to asses current state of the art in electronic vote systems and to determine if any advance can be done using Ethereum technology in this field. If any enhancement can be done to the current systems, ``Ethereum based e-voting system'' will be the topic of a bachelor thesis.
+\end{abstract}
+
+\section{INTRODUCTION} \label{intro}
+
+Due to it's properties, \textit{blockchain} seems to be a suitable technology to create an electronic voting scheme. In particular smart contracts embedded in the block chain can make the real difference allowing to enhance the technology it relies on and provide the framework to create a bulletproof voting system. The intention is to use Ethereum \cite{ethereum}, a smart contract enabled block chain to achieve the goal. \\
+
+First, and in order to ease the comprehension of the final conclusions, some principles and peculiarities of Ethereum are going to be presented in \ref{sec1}. Then, in \ref{sec2}, we are going to develop an evaluation framework of properties electronic vote systems should have, based on S. Delaune \textit{et al}. \cite{verify properties, formal properties}, B. Meng-Hong Tsai \cite{sec properties} and S. Petride \cite{sec evote}. Later, in \ref{sec3}, we are going to apply the framework to some electronic vote systems. Once the evaluation is done, in \ref{objecives}, we are going to present what are the objectives we pretend to achieve in the bachelor thesis, including an small design proposal.Finally, \ref{end} is devoted to derive some conclusions and to justify the decision of choosing Ethereum as the ideal technology to achieve the objectives.
+
+\section{BRIEF INTRODUCTION TO ETHEREUM\cite{ethdoc}} \label{sec1}
+
+Now we are going to introduce some of the main Ethereum properties that are going to be used in the development of the idea. \\
+
+Ethereum is an open \textit{blockchain} platform that lets anyone build and use decentralized applications that run on \textit{blockchain} technology. Like Bitcoin, no one controls or owns Ethereum - it is an open-source project. But unlike the Bitcoin protocol, Ethereum was designed to be adaptable and flexible. It is easy to create new applications on the Ethereum. \\
+
+Ethereum is a programmable \textit{blockchain}. Rather than give users a set of predefined operations (e.g. bitcoin transactions), Ethereum allows users to create their own operations of any complexity they wish. In this way, it serves as a platform for many different types of decentralized \textit{blockchain} applications, including but not limited to cryptocurrencies. \\
+
+Whereas the Bitcoin \textit{blockchain} was purely a list of transactions, Ethereum’s basic unit is the account. The Ethereum \textit{blockchain} tracks the state of every account, and all state transitions on the Ethereum blockchain are transfers of value and information between accounts. There are two types of accounts:
+
+\begin{itemize}
+	\item Externally Owned Accounts (EOAs), which are controlled by private keys.
+	\item Contract Accounts, which are controlled by their contract code and can only be ``activated'' by an EOA.
+\end{itemize}
+
+For most users, the basic difference between these is that human users control EOAs - because they can control the private keys which give control over an EOA. Contract accounts, on the other hand, are governed by their internal code. If they are ``controlled'' by a human user, it is because they are programmed to be controlled by an EOA with a certain address, which is in turn controlled by whoever holds the private keys that control that EOA. The popular term ``smart contracts'' refers to code in a Contract Account – programs that execute when a transaction is sent to that account. Users can create new contracts by deploying code to the \textit{blockchain}. \\
+
+Contract accounts only perform an operation when instructed to do so by an EOA. So it is not possible for a Contract account to be performing native operations like random number generation or API calls – it can do these things only if prompted by an EOA. This is because Ethereum requires nodes to be able to agree on the outcome of computation, which requires a guarantee of strictly deterministic execution.
+
+\section{EVALUATION FRAMEWORK} \label{sec2}
+
+Based on \cite{verify properties, formal properties, sec properties,sec evote} we have developed a framework to address the main issues that concern electronic vote systems. This framework will be used later on to assess some published ideas and applications.
+
+\begin{enumerate}
+	\item Fairness: no early results can be obtained that could influence the remaining voters.
+	\item Eligibility: only legitimate voters can vote.
+	\item Uniqueness: no voter should be able to vote more than one time.
+	\item Privacy/anonymity: the system can not reveal how a particular voter voted.
+	\item Receipt-freeness: a voter does not gain any information(a receipt) which can be used to prove to a coercer that she voted in a certain way.
+	\item Coercion-resistance: a voter cannot cooperate with a coercer to prove to him that she voted in a certain way.
+	\item Individual verifiability: a voter can verify that her vote was really counted.
+	\item Auditability: the published outcome is really the sum of all the votes.
+	\item Non-repudiation: preventing the voter from later saying  that the authentication had been subverted by a masquerader.
+	\item Integrity: votes should not be able to be modified, forged, or deleted without detection.
+	\item Reliability: elections systems should work robustly, without loss of any votes, even in the face of numerous failures, including failures of voting machines and total loss of Internet communication.
+	\item Flexibility: election system should allow for a variety of ballot question formats, be compatible with a variety of standard platforms and technologies, and be accessible to everyone.
+	\item System availability: the system must be protected against both accidental and malicious denials of service.
+	\item Decentralized: is not required a trusted third party to execute the voting.
+	\item Self-tallying: the system is able to design a winer based on the votes.
+\end{enumerate}
+
+\section{TECHNOLOGIES ASSESMENT} \label{sec3}
+
+Based on the framework defined in \ref{sec2}, we are going to assess several ideas, technologies and applications in the field of electronic voting. To ease the evaluation the results are going to be displayed in ~\ref{tab:a} in a more friendly way.
+
+\begin{table*}[!htb]
+	\caption{VOTING SCHEMES CLASSIFICATION}
+	\label{tab:a}
+	\begin{tabularx}{\textwidth}{@{}l*{15}{C}}
+		\toprule
+		 & 01 & 02 & 03 & 04 & 05 & 06 & 07 & 08 & 09 & 10 & 11 & 12 & 13 & 14 & 15 \\
+		\midrule
+		\rowcolor[HTML]{80dfff}
+		V. Buterin \cite{ethereum} &  &  &  &  &  &  &  &  & \ding{51} & \ding{51} & \ding{51} &  & \ding{51} & \ding{51} &  \\
+		\rowcolor[HTML]{ffb84d}
+		P. McCorry \textit{et al.} \cite{eth vote} &  & \ding{51} &  & \ding{51} &  &  &  & \ding{51} & \ding{51} & \ding{51} & \ding{51} &  & \ding{51} & \ding{51} &  \\
+		D. Khader \textit{et al.} \cite{fair} & \ding{51} &  &  & \ding{51} &  &  &  &  &  &  & \ding{51} &  &  & \ding{51} &  \\
+		F. Hao \textit{et al.} \cite{2round} &  &  &  & \ding{51} &  &  &  &  &  &  & \ding{51} &  &  & \ding{51} &  \\
+		R. L. Rivest \textit{et al.} \cite{batch} &  &  &  &  &  &  &  &  &  &  &  &  &  &  & \ding{51} \\
+		P. Chaidos \textit{et al.} \cite{belenios} &  &  &  & \ding{51} & \ding{51} &  & \ding{51} & \ding{51} &  &  &  &  &  &  &  \\
+		A. Jules \textit{et al.} \cite{core} &  &  &  &  &  &  &  &  &  &  &  &  &  & \ding{51} &  \\
+		J. Groth \cite{maxpriv} &  &  &  & \ding{51} &  &  &  &  &  &  &  &  &  &  &  \\
+		O. Kulyk \textit{et al.} \cite{delegate} & \ding{51} & \ding{51} &  & \ding{51} &  &  &  &  &  &  & \ding{51} & \ding{51} &  &  &  \\
+		B. Adida \cite{webhelios} &  &  &  & \ding{51} &  &  & \ding{51} & \ding{51} &  &  &  &  &  &  &  \\
+		O. Pereira \textit{et al.} \cite{mixnet} &  &  &  & \ding{51} &  &  &  &  &  &  &  &  &  &  &  \\
+		O. Baudron \textit{et al.} \cite{multicandidate} &  &  &  & \ding{51} & \ding{51} & \ding{51} &  & \ding{51} &  &  & \ding{51} & \ding{51} &  &  &  \\
+		A, Kiayias \textit{et al.} \cite{selftall} &  &  &  & \ding{51} &  &  &  &  & \ding{51} &  & \ding{51} &  &  &  & \ding{51} \\
+		V. Iovino \textit{et al.} \cite{seleneJCJ} &  &  &  & \ding{51} &  & \ding{51} & \ding{51} & \ding{51} &  &  &  &  &  &  &  \\
+		\rowcolor[HTML]{ffb84d}
+		S. Bistarelli \textit{et al.} \cite{bitvote} &  & \ding{51} & \ding{51} & \ding{51} & \ding{51} & \ding{51} &  & \ding{51} & \ding{51} & \ding{51} & \ding{51} &  &  & \ding{51} &  \\
+		M. R. Clarkson \textit{et al.} \cite{civitas} &  &  &  &  &  & \ding{51} &  & \ding{51} &  & \ding{51} &  & \ding{51} &  &  &  \\
+		P. Y. A. Ryan \textit{et al.} \cite{selene} &  &  &  &  & \ding{51} & \ding{51} &  & \ding{51} &  &  &  &  &  &  &  \\
+		\rowcolor[HTML]{ffb84d}
+		K. Lee \textit{et al.} \cite{blockvote} &  &  &  & \ding{51} &  &  &  & \ding{51} & \ding{51} & \ding{51} & \ding{51} &  & \ding{51} & \ding{51} &  \\
+		\rowcolor[HTML]{ffb84d}
+		A. B. Ayed \cite{chainvote} &  & \ding{51} & \ding{51} & \ding{51} &  &  &  & \ding{51} & \ding{51} & \ding{51} & \ding{51} &  & \ding{51} & \ding{51} &  \\
+        Tivi \cite{tivi}* & \ding{51} & \ding{51} & \ding{51} & \ding{51} & & & \ding{51} & \ding{51} & \ding{51} & \ding{51} & \ding{51} & \ding{51} & & & \\
+        \rowcolor[HTML]{ffb84d}
+        Follow My Vote \cite{fmv}* & & & & \ding{51} & & & \ding{51} & \ding{51} & \ding{51} & \ding{51} & \ding{51} & & \ding{51} & \ding{51} & \\
+        \rowcolor[HTML]{ffb84d}
+        VoteWatcher \cite{votewatcher}* & & \ding{51} & & \ding{51} & & & & \ding{51} & & \ding{51} & \ding{51} & & \ding{51} & \ding{51} & \\
+        \rowcolor[HTML]{ffb84d}
+        BitCongress \cite{bitcongress} & & \ding{51} & & \ding{51} & \ding{51} & & & \ding{51} & \ding{51} & \ding{51} & \ding{51} & & \ding{51} & \ding{51} & \ding{51} \\
+		\rowcolor[HTML]{ff4dff}
+		MY OBJECTIVE & \ding{51} & \ding{51} & \ding{51} & \ding{51} & \ding{51} &  &  & \ding{51} & \ding{51} & \ding{51} & \ding{51} &  & \ding{51} & \ding{51} & \ding{51} \\
+		\bottomrule
+	\end{tabularx}
+    ~\\
+    {*\footnotesize A whitepaper about this applications was not found, so they are assessed according to what is published in the web page.} \\
+    {\color[HTML]{80dfff} \textbullet} Ethereum as \textit{blockchain} (No smart contract possibilities included). \\
+    {\color[HTML]{ffb84d} \textbullet} \textit{Blockchain} enabled.\\
+    {\color[HTML]{ff4dff} \textbullet} My proposal.
+\end{table*}
+
+\section{OBJECTIVES} \label{objecives}
+
+The objective is to develop a bachelor thesis on the topic of electronic voting systems using \textit{blockchain} technology, specifically Ethereum. In the context of the framework defined in \ref{sec2} the system should comply with the following properties:
+
+\begin{multicols}{2}
+	\begin{itemize}
+		\item Fairness.
+		\item Eligibility.
+		\item Uniqueness.
+		\item Privacy/anonymity.
+		\item Recipient-freeness.
+		\item Auditability.
+		\item Non-repudiation.
+		\item Integrity.
+		\item Reliability.
+		\item Available full time.
+		\item Decentralized.
+		\item Self-tallying.
+	\end{itemize}
+\end{multicols}
+
+Nonetheless, if found convenient for the purpose of the thesis, the properties to be fulfilled by the system could be modified.
+
+\subsection{DESIGN}
+\begin{figure}[!hbt]
+	\caption{SIMPLE SCHEME DESIGN}
+	\label{fig:a}
+	\begin{center}
+	%\includegraphics[width=0.5\textwidth]{Eth_vote.png}
+	\end{center}
+    {\scriptsize *Connections to the \textit{blockchain} can be done either through a full node or through a client.}
+\end{figure}
+
+We have created a simple scheme, \ref{fig:a}, to show how the implemented system would look like. Note that the scheme, as it is, is a simplistic vision of what may become the final product. The phases/actions are:
+
+\begin{enumerate}
+	\item The candidates to the elections register themselves in the \textit{blockchain} so they can be voted.
+	\item A node inserts the transaction in a block that will be validated later on by the network.
+	\item Voters cast their vote.
+	\item Ballot is added to the \textit{blockchain} encrypted, no one can know how a user voted.
+	\item When the voting period ends, a trustworthy administrator triggers the contract to tally the votes. 
+\end{enumerate}
+
+\section{CONCLUSIONS} \label{end}
+
+\textit{Blockchain} itself offers a good framework to develop an electronic voting application since it fulfills properties 9, 10, 11, 13 \& 14 without any modification. As can be seen in ~\ref{tab:a}, no one of the studied \textit{blockchain} enabled application has fulfilled properties 1, 12 \& 15. The reason why I think that Ethereum is an ideal framework to develop an electronic voting application is that it implements smart contracts, which enables a developer create distributed applications so, in theory all the ideas studied along the bibliography of this report could be merged in the \textit{blockchain}. An other reason to choose Ethereum is that it is really well documented and its foundation provides a lot of examples on how to develop software in this platform.
+
+\begin{thebibliography}{99}
+	\bibitem{ethereum} V. Buterin. \textit{A Next-Generation Smart Contract and Decentralized Application Platform}. 2014
+	\bibitem{sec properties} B. Meng-Hong Tsai. \textit{Security Properties for Electronic Voting}. (http://www.cs.cornell.edu/courses/cs513/2002SP/proj.00.StuSolns/mbt91.html)
+	\bibitem{sec evote} S. Petride. \textit{Security Properties for Electronic Voting}. (http://www.cs.cornell.edu/courses/cs513/2002SP/proj.00.StuSolns/sp2580.htm)
+	\bibitem{verify properties} S. Delaune, S. Kremer \& M. Ryan. \textit{Verifying Properties of Electronic Voting Protocols}.
+	\bibitem{formal properties} S. Delaune \& S. Kremer. \textit{Formalising security properties in electronic voting protocols}.
+	\bibitem{fair} D. Khader, B. Smith, P. Y. A. Ryan \& F.Hao. \textit{A Fair and Robust Voting System by Broadcast}.
+	\bibitem{eth vote} P. McCorry, S. F. Shahandashti \& F. Hao. \textit{A Smart Contract for Boardroom Voting with Maximum Voter Privacy}.
+	\bibitem{homohorphic} K. Gj{\o}steen \& M. Strand. \textit{A roadmap to fully homomorphic elections: Stronger security, better verifiability}.
+	\bibitem{2round} F. Hao, P. Y. A. Ryan \& P. Zieliński. \textit{Anonymous voting by two-round public discussion}.
+	\bibitem{batch} R. L. Rivest \& P. B. Stark. \textit{BatchVote: Voting rules designed for auditability}.
+	\bibitem{belenios} P. Chaidos, V. Cortier, G. Fuchsbauer \& D. Galindo. \textit{BeleniosRF: A Non-interactive Recipt-Free Electronic Voting Scheme}. 23rd ACM Conference on Computer and Communications Security (CCS'16), Oct 2016, Vienna, Austria, 2016.
+	\bibitem{core} A. Jules, D. Catalano \& M. Jakobsson. \textit{Coercion-Resistant Electronic Elections}.
+	\bibitem{maxpriv} J. Groth. \textit{Efficient Maximal Privacy in Boardroom Voting and Anonymous Broadcast}.
+	\bibitem{delegate} O. Kulyk, S. Neumann, K. Marky \& M. Volksmer. \textit{Enabling Vote Delegation for Boardroom Voting}.
+	\bibitem{assert} R. Ramanujam, V. Sundararajan \& S. P. Suresh. \textit{Existential Assertions for Voting Protocols}.
+	\bibitem{webhelios} B. Adida. \textit{Helios: Web-based Open-Audit Voting}.
+	\bibitem{mixnet} O. Pereira \& R. L. Rivest. \textit{Marked Mix-Nets}.
+	\bibitem{multicandidate} O. Baudron, P. A. Fouque, D. Pointcheval, G. Poupard \& J. Stern. \textit{Practical Milti-Candidate Election System}.
+	\bibitem{selftall} A, Kiayias \& M. Yung. \textit{Self-talying Elections and Perfect Ballot Secrecy}.
+	\bibitem{seleneJCJ} V. Iovino, A. Rial, P. B. R{\o}nne \& P. Y. A. Ryan. \textit{Using Selene to Verify your vote in JCJ}.
+	\bibitem{bitvote} S. Bistarelli, M. Mantilacci, P. Santancini \& F. Santini. \textit{An End-to-end Voting-system Based on Bitcoin}.
+	\bibitem{civitas} M. R. Clarkson, S. Chong \& A. C. Myers. \textit{Civitas: Toward a Secure Voting System}.
+	\bibitem{selene} P. Y. A. Ryan, P. B. R{\o}nne \& V. Iovino. \textit{Selene: Voting with Transparent Verifiability and Coercion-Mitigation}.
+	\bibitem{blockvote} K. Lee, J. I. James , T. G. Ejeta \& H. J. Kim. \textit{Electronic Voting Service Using Block-Chain}.
+	\bibitem{votewatcher} VoteWatcher. (http://votewatcher.com/)
+	\bibitem{bitcongress} BitCongress. (http://bitcongress.org/BitCongress\_Whitepaper.pdf)
+	\bibitem{fmv} Follow My Vote. (https://followmyvote.com/online-voting-technology/blockchain-technology/)
+	\bibitem{tivi} Tivi. (https://tivi.io), (https://vimeo.com/187379038)
+	\bibitem{chainvote} A. B. Ayed. \textit{A Conceptual Secure Blockchain-Based Electronic Voting System}.
+	\bibitem{ethdoc} Ethereum Homestad documentation. (http://ethdocs.org)
+\end{thebibliography}
+
+\end{document}

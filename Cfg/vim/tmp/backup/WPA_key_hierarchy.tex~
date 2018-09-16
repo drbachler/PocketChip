@@ -1,0 +1,26 @@
+\begin{tikzpicture}
+    \node[draw, rectangle, align=center, minimum height=3em, text width=12em]
+        (kck) at (0,0) {Key Confirmation Key\\ {\small 128b}};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=12em]
+        (kek) at (5,0) {Key Encryption Key};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=12em]
+        (tk) at (10,0) {Temporal Key};
+
+    \node[draw, rectangle, align=center, minimum height=3em, text width=12em]
+        (ptk) at (5,2) {Pairwise Transient Key};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=12em]
+        (pmk) at (5,4) {Pairwise Master Key};
+
+    \node[draw, rectangle, align=center, minimum height=3em, text width=12em]
+        (psk) at (2,6) {Pre-Shared Key};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=12em]
+        (eapk) at (8,6) {EAP Key};
+
+    \draw[-] (kck.90) -- (ptk.270);
+    \draw[-] (kek.90) -- (ptk.270);
+    \draw[-] (tk.90) -- (ptk.270);
+    \draw[-] (ptk.90) -- node[right] {PRF (pseudo random function)} (pmk.270);
+    \draw[-] (pmk.90) -- (psk.270);
+    \draw[-] (pmk.90) -- (eapk.270);
+\end{tikzpicture}
+

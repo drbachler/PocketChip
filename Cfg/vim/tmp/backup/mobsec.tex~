@@ -1,0 +1,16 @@
+\documentclass[a4paper, 11pt]{extreport}
+
+\usepackage{mystyle}
+\begin{document}
+
+% Table of contents.
+\tableofcontents \newpage
+
+% Sections.
+\input{./tex/introduction.tex} \clearpage
+\input{./tex/measure_and_mechanisms.tex} \clearpage
+\input{./tex/wlan.tex} \clearpage
+\input{./tex/mobile.tex} \clearpage
+\input{./tex/rfid.tex}
+
+\end{document}

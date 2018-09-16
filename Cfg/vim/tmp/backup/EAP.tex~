@@ -1,0 +1,26 @@
+\begin{tikzpicture}[]
+    \node[draw, rectangle, align=center, minimum height=2em, text width=5em]
+        (sta) at (0, 10) {Sation};
+    \node[draw, rectangle, align=center, minimum height=2em, text width=5em]
+        (ap) at (4, 10) {AP};
+    \node[draw, rectangle, align=center, minimum height=2em, text width=5em]
+        (as) at (8, 10) {AS};
+
+    \node[below of=sta, node distance=5cm] (stag) {};
+    \node[below of=ap, node distance=5cm] (apg) {};
+    \node[below of=as, node distance=5cm] (asg) {};
+
+    \draw (sta) -- (stag);
+    \draw (ap) -- (apg);
+    \draw (as) -- (asg);
+
+    \draw[->] (4,9) -- node[above, midway] {\tiny 802.1X/EAP Request Identity} (0,9);
+    \draw[->] (0,8.5) -- node[above, midway] {\tiny 802.1X/EAP Response Identity} (4,8.5);
+    \draw[->] (4,8.25) -- node[above, midway] {\tiny Radius Access Request Identity} (8,8.25);
+    \draw[->] (8, 7.75) -- node[above, midway] {\tiny EAP - Authentication challenge} (0,7.75);
+    \draw[->] (0,7.25) -- node[above, midway] {\tiny EAP - Challenge Response} (8,7.25);
+    \draw[->] (8,6.75) -- node[above, midway] {\tiny Pairwise master key} (4,6.75);
+    \draw[->] (4,6.5) -- node[above, midway] {\tiny Authentication success} (0,6.5);
+    \draw[<->] (0,6) -- node[above, midway] {\tiny Key derivation} (4,6);
+\end{tikzpicture}
+

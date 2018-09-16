@@ -1,0 +1,50 @@
+\begin{tikzpicture}
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!20!green!30]
+        (a) at (0, 9) {Data};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (t) at (0, 7) {Transport};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (n) at (0, 5) {Network};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (d) at (0, 2) {Link};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (p) at (0, 0) {Physical};
+
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (d4) at (9.6,9) {Data};
+
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (d3) at (7.4,7) {TCP/UDP};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (t3) at (9.6,7) {Data};
+
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (i2) at (5.2,5) {IP};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (t2) at (7.4,5) {TCP/UDP};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (d2) at (9.6,5) {Data};
+
+    % Link
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (m1) at (3,2) {MAC};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (i1) at (5.2,2) {IP};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (t1) at (7.4,2) {TCP/UDP};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (d1) at (9.6,2) {Data};
+    \node[draw, rectangle, rounded corners, minimum height=2.5em, align=center, text width=5em, fill=blue!10]
+        (mf1) at (11.8,2) {MAC FCS};
+
+    \draw[<->] (a.270) -- (t.90);
+    \draw[<->] (t.270) -- (n.90);
+    \draw[<->] (n.270) -- (d.90);
+    \draw[<->] (d.270) -- (p.90);
+
+    \draw[decorate, decoration={brace, amplitude=10pt}]
+        (i1.145) -- node[above, yshift=7.5pt] {MAC Service Data Unit (MSDU)} (d1.35);
+    \draw[decorate, decoration={brace, amplitude=10pt}]
+        (mf1.315) -- node[below, yshift=-7.5pt] {MAC Protocol Data Unit (MPDU)} (m1.225);
+\end{tikzpicture}
+

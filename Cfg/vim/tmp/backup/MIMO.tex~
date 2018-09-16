@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+    \node[draw, rectangle, minimum height=3em, align=center, text width=2em]
+        (t1) at (0,0) {$ t_x $};
+    \node[draw, rectangle, minimum height=3em, align=center, text width=2em]
+        (r1) at (3,0) {$ r_{x0} $\\~\\ $ r_{x1} $};
+
+    \node[draw, rectangle, minimum height=3em, align=center, text width=2em]
+        (t2) at (0,3) {$ t_x $};
+    \node[draw, rectangle, minimum height=3em, align=center, text width=2em]
+        (r2) at (3,3) {$ r_x $};
+
+    \node[draw, rectangle, minimum height=3em, align=center, text width=2em]
+        (t3) at (6,3) {$ t_{x0} $\\~\\ $ t_{x1} $};
+    \node[draw, rectangle, minimum height=3em, align=center, text width=2em]
+        (r3) at (9,3) {$ r_x $};
+
+    \node[draw, rectangle, minimum height=3em, align=center, text width=2em]
+        (t4) at (6,0) {$ t_{x0} $\\~\\ $ t_{x1} $};
+    \node[draw, rectangle, minimum height=3em, align=center, text width=2em]
+        (r4) at (9,0) {$ r_{x0} $\\~\\ $ r_{x1} $};
+
+    \draw[->] (t2) -- node[above, midway] {SISO} (r2);
+    \draw[->] (t1) -- node[above, midway] {SIMO} (r1.135);
+    \draw[->] (t1) -- (r1.225);
+    \draw[->] (t3.45) -- node[above, midway] {MISO} (r3);
+    \draw[->] (t3.315) -- (r3);
+    \draw[->] (t4.45) -- node[above, midway] {MISO} (r4.135);
+    \draw[->] (t4.45) -- (r4.225);
+    \draw[->] (t4.315) -- (r4.225);
+    \draw[->] (t4.315) -- (r4.135);
+
+\end{tikzpicture}
+

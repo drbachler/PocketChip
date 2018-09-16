@@ -1,0 +1,174 @@
+\section*{Security on RFID systems}
+\addcontentsline{toc}{section}{Security on RFID systems}
+
+\textbf{\textit{Automatic Identification Systems}}:
+
+\begin{itemize}
+    \item Bar codes: bars and spaces encoded characters. Read by an optical
+        scanner and processed by a computer. It requires visibility, it
+        identifies product type, not product as unit, it is easily damaged. Bar
+        codes are standarized: UPC (universal product code), EAN (european
+        article numbering). EAN 13 (13 digits): 3 for country code, 6 for
+        producer code, 3 for item code, 1 for control.
+
+    \item OCR (optical character recognition): identify characters from image.
+        It has a high price.
+
+    \item Smart cards.
+
+    \item Biometric systems.
+
+    \item Etc.
+\end{itemize}
+
+\textbf{RFID} (radio frequency identification) is a method for storing and
+retrieving data using devices called RFID tags. An RFID tag is a small device
+that can be incorporated into an object, person or animal for proper
+identification using radio waves. They are composed by an antenna, a radio
+transducer (convert), microchip to make computations, memory and [de]codification
+circuit. RFID tags show different characteristics at different frequencies, the
+operating frequency ranges are:
+
+\begin{itemize}
+    \item Low frequency: $ 120 \sim 134\ kHz $. (ISO11784/5 ISO14223).
+    \item High frequency: $ 13.56\ MHz $. (ISO15693/ ISO14443/ISO 18000-3).
+    \item Ultra high frequency (UHF): $ 850 \sim 960\ MHz $.
+        (ISO18000-6, EPCGlobal).
+\end{itemize}
+
+According to energy consumption, RFID tags can be classified as follows:
+
+\begin{itemize}
+    \item Pasive: no internal battery, power supplied by the reader. Smallest and
+        cheapest ones. Read distance up to $ 3.3m $.
+    \item Semi-pasive: internal battery to power up the chip, energy from the
+        reader is needed for retransmission. Read distance up to $ 10m $.
+    \item Active: internal battery with lifetime up to 10 years. May be used for
+        high end product tracing. Read distance is more than $ 10m $.
+\end{itemize}
+
+Each country imposes regulations withrespect to: channels, power to transit and
+frequencies. Several standards are created. EPC (electronic product code) world
+first RFID standard it later becomes the global electronic product code (EPC C1
+G2), operates in UHF, passive, 65 KB. EPC is 96 bits long and is divided in four:
+
+\begin{itemize}
+    \item Header: 8 bits. Identify length, type, structure and EPS generation.
+
+    \item EPC Administrator: 28 bits. Maker, responsible entity, request entity
+        responsible of keeping all subsequent partition (268 millions of
+        companies)
+
+    \item Object class: 24 bits. Identify the object class.
+    \item Serial number: 36 bits. Identify the instance.
+\end{itemize}
+
+Passive tags have serious restrictions in computing power and storage.
+Incorporate CRC, a 16 bit PRNG and two pins, one for access and an other for
+killing the tag. It supports the operations: select, aimed to select a group
+of tags; inventory, identification of a specific tag; and acces, used when tag
+is already selected; also ultralight bitwise operations like AND, OR and XOR.
+Memory structure is divided in four blocks:
+
+\begin{itemize}
+    \item Memory reserved: read only, it contains sensitive data like access and
+        kill PINs.
+    \item EPC or UII (unique item identifier). As defined in EPC C1 G2.
+    \item TID: tag identifier 8 bits. unequivocally identify the commands and
+        optional features that the label supports.
+    \item User memory: optional. Additional functions like CRC and PRNG.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \input{./fig/rfid-id-auth.tex}
+    \caption{RFID identification and authentication.}
+\end{figure}
+
+One of the main problems is that EPC is sent in plaintext (4), so traking of
+products is really easy, evem for an adversary. There are several threats to
+this system:
+
+\begin{itemize}
+    \item Hardware layer:
+    \begin{itemize}
+        \item Confidentiality: side-channels attack $ \rightarrow $ deduce
+            information, fault attacks $ \rightarrow $ heating or cooling,
+            physical manipulation $ \rightarrow $ change ROM cells or deasembly.
+
+        \item Integrity: modification of data, impersonation $ \rightarrow $
+            cloning card, exchange tags, reprogramming tags.
+
+        \item Availablity: extraction, physical destruction of the tag, abuse of
+            ``kill'' command (can be bruteforced), waste resources $ \rightarrow $
+            batteries can be discharged.
+    \end{itemize}
+
+    \item Communication layer:
+    \begin{itemize}
+        \item Confidentiality: distant read with powerfull reader, privacy
+            $ \rightarrow $ trace the tag, compromise the key (it leads to other
+            attacks).
+
+        \item Integrity: relay attack, reconstruction of messages, data
+            modification, data insertion.
+
+        \item Availablity: active interference, signal degradation.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Electronic passport}
+\addcontentsline{toc}{subsection}{Electronic passport}
+
+ICAO (international civil aviation organization) standards for e-passports.
+Authentication can use four different metods: data authentication, chip
+authentication, terminal authentication, passport holder authentication. Is done
+through four mechanisms:
+
+\begin{enumerate}
+    \item Passive authentication: ICAO obligatory. Digital signature in the
+        passport chip (signed by issuing state). It has 16 data grups (DG): DG1
+        MRZ (machine readable zone), DG2 facial image, DG3 fingerprints...
+
+    \item BAC (basic access control): ICAO optional, EU obligatory. Prevents non
+        authorized access and eavesdropping. The reader tests the knowledge of
+        MRZ, data is read only if the reader probes the knowledge of the MRZ. A
+        key is derived for integrity and confidentiality.
+
+    \item Active authentication: authentication is done by the chip to avoid
+        cloning. A challenge is signed by the passport chip.
+
+    \item EAC (extended access control): only in EU, obligatory for advanced
+        biometric systems. More secure challenge based scheme. Terminal sends
+        its certificate to the chip so it can be checked, the chip sends a
+        challenge and the terminal signs it (with the cert provided before).
+\end{enumerate}
+
+The MRZ scheme is as follows:
+
+\begin{itemize}[label={}]
+    \item Line 1: $ A<BBB(C)^+<<(D_1)^+<(D_2)^*<(<)^* $
+    \begin{itemize}[label={}]
+        \item $ A $: indicates the type of document, for the passport is a P.
+        \item $ BBB $: country code, for Spain is ESP.
+        \item $ C $: primary identifier, at least one character.
+        \item $ << $: separator for the primary identifier.
+        \item $ D_x $: secondary identifiers, at least one with at least one
+            character.
+        \item $ (<)^* $: padding, may have length 0.
+    \end{itemize}
+    \item Line 2: $ EEEEEEEEEFGGGHHHHHHIJKKKKKKLMMMMMMMMMMMMMMMNO $
+    \begin{itemize}[label={}]
+        \item $ E $: document number.
+        \item $ F $: chech digit for document number.
+        \item $ G $: nationality of the owner.
+        \item $ H $: date of birth of the owner.
+        \item $ I $: check digit for the birth date.
+        \item $ J $: gender of the owner $ \in \{M \mid F\} $.
+        \item $ K $: date of expiration.
+        \item $ L $: check digit for expirtion date.
+        \item $ M $: optional data (up to the issuing country).
+        \item $ N $: check digit for the optional data.
+        \item $ O $: check digit for the document (overall).
+    \end{itemize}
+\end{itemize}

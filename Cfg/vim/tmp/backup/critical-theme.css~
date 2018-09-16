@@ -1,0 +1,89 @@
+@keyframes intro {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+main, footer {
+  animation: intro 0.3s both;
+  animation-delay: 0.15s;
+}
+:target {
+  color: #fff;
+}
+/* hack.css overrides and enhancements */
+.muted {
+    color: #669999
+}
+a {
+    cursor: pointer;
+    color: #00cc99;
+    text-decoration: none;
+    border-bottom: none
+}
+.hack h1 {
+    text-align: center;
+    font-style: italic
+}
+a:hover{
+    color: #99ffe6;
+    background-color: transparent;
+    border-bottom: 1px solid #99ffe6
+}
+h2 a {
+    border-bottom: 1px solid #00cc99
+}
+.hack blockquote {
+    font-style: italic
+}
+.hack blockquote:after {
+    content: "▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A▎\A";
+    color: #00cc99;
+    white-space:pre;
+    position:absolute;
+    top:0;
+    left:0;
+    line-height:20px
+}
+.hack h2:before,.hack h3:before,.hack h4:before,.hack h5:before,.hack h6:before {
+    color: #00cc99
+}
+.hack li ul {
+  margin: 0;
+}
+.main {
+  padding: 20px 10px;
+}
+a[itemprop="url"] {
+    cursor: pointer;
+    color: #00cc99
+}
+a[itemprop="url"]:hover {
+    color: #99ffe6;
+    background-color: transparent;
+    border-bottom: 1px solid #99ffe6
+}
+a[href*="//"]::after {
+  /* data uri svg icon. thanks to @Fastidious for the idea */
+  /*content: " " url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20class='i-external'%20viewBox='0%200%2032%2032'%20width='14'%20height='14'%20fill='none'%20stroke='%23ff9800'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='9.38%'%3E%3Cpath%20d='M14%209%20L3%209%203%2029%2023%2029%2023%2018%20M18%204%20L28%204%2028%2014%20M28%204%20L14%2018'/%3E%3C/svg%3E"); */
+}
+html {
+  font-size: 13px;
+}
+.hack pre {
+  font-size: 17px;
+}
+article [itemprop="description"] {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+@media screen and (min-width: 768px) {
+  html {
+    font-size: 1em;
+  }
+  .container {
+    max-width: 50rem;
+  }
+}

@@ -1,0 +1,34 @@
+\begin{tikzpicture}
+    \node[draw, rectangle, minimum height=8em, align=center, text width=10em]
+        (fs) at (0,0) {\parbox[b][7.5em]{10em}{\center \small File System}};
+    \node[draw, rectangle, minimum height=5em, align=center, text width=5em]
+        (file) at (0,0.25) {File};
+    \node[draw, rectangle, minimum height=5em, align=center, text width=5em]
+        (aes) at (6,0.25) {AES};
+    \node[draw, rectangle, minimum height=8em, align=center, text width=15em]
+        (met) at (12,0) {\parbox[b][7.5em]{12.5em}{\center \small Metadata}};
+    \node[draw, rectangle, minimum height=5em, align=center, text width=5em]
+        (fkm) at (10.25,0.25) {File key};
+    \node[draw, rectangle, minimum height=5em, align=center, text width=5em]
+        (ckm) at (13.75,0.25) {Class key};
+    \node[] (plus) at (12,0.25) {\huge $ + $};
+    \node[draw, rectangle, minimum height=5em, align=center, text width=5em]
+        (encf) at (6,-2.5) {Enc File};
+    \node[draw, rectangle] (menc) at (10,-2.5) {Encrypt};
+
+
+    \draw[->] (file) -- (aes);
+    \draw[->] (fkm) -- (aes);
+    \draw[->] (aes) -- (encf);
+    \draw[->] (met) |- (encf);
+    \draw[->] (encf) -| (fs);
+    %\node[draw, rectangle, minimum height=5em, align=center, text width=5em, fill=blue!10]
+    %    (d) at (0,0) {iOS};
+    %\node[draw, rectangle, minimum height=5em, align=center, text width=5em, fill=blue!10]
+    %    (s) at (12,0) {Apple Server};
+    %\draw[->] (d.30) -- node[above] {\small{ECID, NONCE, h(LLB, iBoot, kernel,
+    %    OS image)}} (s.150);
+    %\draw[<-] (d.330) -- node[above] {\small{Sign(h(LLB, iBoot, kernel, OS image))}}
+    %    (s.210);
+\end{tikzpicture}
+

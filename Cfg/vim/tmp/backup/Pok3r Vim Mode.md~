@@ -1,0 +1,97 @@
++++
+date = "2017-06-16T18:17:08+02:00"
+title = "Pok3r Vi Mode"
+tags = ["",""]
+categories = [""]
+draft = true
+description = "Program Pok3r mechanical keyboard to behave like we were in Vi constantly"
+
++++
+
+I recently bought [Pok3r keyboard] (
+https://www.reddit.com/r/MechanicalKeyboards/wiki/pok3r "Pok3r keyboard").
+In few words, it is a 61-keys mechanical keyboard that is programmable. It has
+4 programming layers, which basically means that you can create 3 new layers to
+do all sorts of crazy stuff (one of them, the default one, is not programmable).
+So I thought how crazy would be if everything in my desktop behaved like Vim. I
+made some research and came to the conclusion that it is more or less feasible.
+Along this post I will explain how to program the keyboard and how to implement
+Vi functionality in it. I will also talk a bit about the documented behaviour
+of Vi.
+
+## Programming the keyboard
+
+To perform this task we can read the [documentation](
+http://www.vortexgear.tw/db/upload/webdata4/6vortex_20166523361966663.pdf "Pok3r
+documentation") or follow some [tutorial](
+https://www.reddit.com/r/MechanicalKeyboards/comments/35uy60/guide_howto_program_your_pok3r_programming_layers/ 
+"Pok3r programming tutorial").
+
+First of all we are going to reset the keyboard to avoid any kind of problem,
+to do so we must press `CTRL + R` for about 5 seconds, a led in the space bar
+will blink. To change the layer we are working on must press the combination
+`FN + <M|<|>|?>`, depending on the layer we want to program. Now we should
+perform the following steps:
+
+  1. Press `FN + Right CTRL` to enter programming mode, right led in the space
+     bar will be steady lit.
+  2. Press the key you want to program, space bar's right led will start
+     blinking.
+  3. Write whatever key combination you want to program.
+  4. Press `PN` to stop recording, space bar's right led will steadily lit again.
+  5. Press `FN + Right CTRL` to exit programming mode right led in the space
+     will turn off.
+
+## Vim-ifying
+
+First of all, a disclaimer: Vim is a really powerful, highly configurable
+software and we will never achieve those standards, the keys that are going to
+be programmed are the basic Vi motions. Now that it has been clarified the
+scope of this procedure, lets begin.
+
+### Normal Mode
+
+Normal mode is intended for navigation and manipulation of text. In our case it
+will mainly be used for navigation. We are going to set _layer 2_ as our Normal
+Mode. The mappings that are going to be implemented are the following:
+
+  1. Movement: as you may all know, Vi uses the keys hjkl as "arrow keys" so we
+     have to set those keys as follows:
+
+     1. h (LEFT)  → FN + J
+     2. j (DOWN)  → FN + K
+     3. k (UP)    → FN + I
+     4. l (RIGHT) → FN + L
+
+  2. Operations: now we are going to map typical operation such as copying and
+     pasting but Vi style. Note that it will not behave exactly like Vi, it will
+     do the thig with the selected text:
+
+     1. y: _yank_ the text, as simple as mapping this key to typical `CTRL + C`.
+     2. p: paste the text, just program the key to do `CTRL + V`.
+     3. d: delete the text, just doing typical delete, `FN + '`.
+
+  3. Custom: I am a Vim fanatic so obviously I have my own
+     [vimrc](https://github.com/igrigar/dot/blob/master/vim/vimrc "vimrc") file.
+     The following mappings are done to resemble it:
+
+     1. L: a stronger version of 'l' that goes the furthest to the left it can
+        reach. The mapping is `FN + H`.
+     2. H: a stronger version of 'h' that goes the furthest to the right it can
+        reach. The mapping is `FN + N`.
+
+     For some reason in editors like _kate_, default text editor in KDE desktop
+     environment, when the line is wrapped the motions 1 and 2, if executed
+     once, only go til the wrap, not the end or begining of the line. To achieve
+     the desired result they have to be executed twice.
+
+Unfortunately this is the furthest it can go. If there was a way to change
+layers in a mapping more functionality could be implemented (such as 'i'
+command), but it seems that there is not a way to do that.
+
+## References
+
+  1. [Keyboard wiki](https://www.reddit.com/r/MechanicalKeyboards/wiki/pok3r "Pok3r keyboard") 
+  2. [Documentation](http://www.vortexgear.tw/db/upload/webdata4/6vortex_20166523361966663.pdf "Pok3r documentation")
+  3. [Programming tutorial](https://www.reddit.com/r/MechanicalKeyboards/comments/35uy60/guide_howto_program_your_pok3r_programming_layers/ "Pok3r programming tutorial")
+  4. [Programming video](https://www.youtube.com/watch?v=AlhQcHg7WRY "Pok3r programming video")

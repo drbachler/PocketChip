@@ -1,0 +1,11 @@
+{
+    "services": {
+        "test": {
+            "date": "25/06/2017", 
+            "mail": "test", 
+            "hp": "1a27adc1fa133a337021ee35568ff8f7a2562293701f2dd0af9d6efaf83550c0e73d63ab59c52f90706e71520a56e6a2be53cf4ceb06120eb9a8c5f03d10755b", 
+            "password": "x\"X2aUlJ+`{Tp@x0", 
+            "hm": "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"
+        }
+    }
+}

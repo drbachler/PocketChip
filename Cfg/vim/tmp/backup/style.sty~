@@ -1,0 +1,47 @@
+\ProvidesPackage{style}
+
+% Set noindent for all doc.
+%\setlength{\parindent}{0pt}
+
+% Change margin sizes.
+\usepackage{anysize}
+\marginsize{1cm}{1cm}{1cm}{1cm}
+
+% Display overfull text with black boxes.
+%\overfullrule=2cm
+
+% Use UTF-8 encoding.
+\usepackage[utf8]{inputenc}
+
+% Use coloured text.
+\usepackage[dvipsnames]{xcolor}
+
+% For enumerating with letters.
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+
+% Being able to center verically table cells.
+\usepackage{array}
+
+% Tikz figures.
+\usepackage{tkz-graph}
+\usetikzlibrary{arrows,positioning, shapes.symbols,shapes.callouts,patterns}
+
+\usepackage{wasysym}
+
+\usepackage{multicol}
+
+% More use for captions.
+\usepackage{caption}
+\captionsetup{labelformat=empty}
+
+% To insert images in the document.
+\usepackage{graphicx}
+\usepackage{eso-pic}
+\usepackage{wrapfig}
+\usepackage{subfigure}
+\graphicspath{ {img/} }
+
+% Add functionalities to lists.
+\usepackage{listings}
+\usepackage{enumitem}

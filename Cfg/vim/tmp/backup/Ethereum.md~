@@ -1,0 +1,27 @@
++++
+date = "2017-06-09T21:53:35+02:00"
+title = "Ethereum"
+tags = ["Ethereum","Blockchain", "Crypto"]
+categories = ["Blockchain"]
+draft = true
+description = "Some research about the cypto coin Ethereum"
++++
+
+# Title 1
+## Title 2
+### Title 3
+#### Title 4
+##### Title 5
+
+Once we have checked the titles we are going to check font types such as
+*italics* or **bolds** or **_a combination of them_**. We are also checking how
+~~scratched~~ will look.
+
+No we are going to test the lists, see how they look:
+
+  1. Item 1.
+  2. Item 2.
+    1. Subitem whatever.
+    2. Subitem whatever.
+      * Test
+  3. Item 3.

@@ -1,0 +1,30 @@
+\begin{tikzpicture}[]
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (ue) at (0, 10) {UE};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (rnc) at (4, 10) {RNC};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (vlr) at (8, 10) {VLR/SGSN};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (auc) at (12, 10) {AUC};
+
+    \node[below of=ms, node distance=5cm] (msg) {};
+    \node[below of=msc, node distance=5cm] (mscg) {};
+    \node[below of=hlr, node distance=5cm] (hlrg) {};
+    \node[below of=auc, node distance=5cm] (aucg) {};
+
+    \draw (ue) -- (msg);
+    \draw (rnc) -- (mscg);
+    \draw (vlr) -- (hlrg);
+    \draw (auc) -- (aucg);
+
+    \draw[->] (0,8.75) -- node[above, midway] {\tiny Access request (IMSI)} (8,8.75);
+    \draw[->] (8,8.5) -- node[above, midway] {\tiny Authentication request} (12,8.5);
+    \draw[<-] (8,8) -- node[above, midway] {\tiny Authentication response}
+        node[below, midway] {\tiny $RAND$, $AUTN$, $XRES$, $CK$, $IK$} (12,8);
+    \draw[->] (8,6.5) -- node[above, midway] {\tiny $RAND$, $AUTN$} (0,6.5);
+    \draw[->] (0,5.5) -- node[above, midway] {\tiny $SRES$} (8,5.5);
+    \draw[->] (8,4.5) -- node[above, midway] {\tiny $CK$, $IK$} (4,4.5);
+    \draw[->] (8,3.5) -- node[above, midway] {\tiny TMSI (if needed)} (0,3.5);
+\end{tikzpicture}
+

@@ -1,0 +1,142 @@
+\documentclass[a4paper, 10pt, twoside]{report}
+
+\usepackage{style}
+
+\begin{document}
+\section{Tema 3. Descriptores de imagen}
+\textbf{\textit{Histogramas}}: Un \textbf{histograma} se define como un gráfico
+de la representación de distribuciones de frecuencias. Concretamente el
+\textbf{histograma de una imagen} representa la frecuencia con la que aparecen
+los píxeles que la forman. Lo que realmente se representa es la intensidad, o
+nivel de brillo, de dichos píxeles. Sus valores suelen oscilar entre $ 0 $ y
+$ 255 $, pero esa escala puede variar dependiendo de la definición de la imagen.\\
+
+Cada imagen tiene su propio histograma. Como regla general se considera que una
+imagen tiene un buen contraste si su histograma se extiende ocupando casi todo
+el rango de tonos. Las imagenes oscuras muestran un histograma con mayor
+densidad en el lado izquierdo, mientras que las claras lo muestran en el lado
+derecho. Por último, podemos encontrar imagenes con bajo contraste, es decir, ni
+muy oscuras ni muy claras, que se caracterizan por tener un \textbf{histograma
+estrecho}.
+
+\begin{figure}[htbp]
+    \centering
+    \subfigure[Buen contraste]{
+        \includegraphics[width=0.4\textwidth]{img/t3i1.png}
+        \includegraphics[width=0.4\textwidth]{img/t3h1.png}
+    }
+    \subfigure[Tonos oscuros]{
+        \includegraphics[width=0.15\textwidth]{img/t3i2.png}
+        \includegraphics[width=0.15\textwidth]{img/t3h2.png}
+    }
+    \subfigure[Tonos claros]{
+        \includegraphics[width=0.15\textwidth]{img/t3i3.png}
+        \includegraphics[width=0.15\textwidth]{img/t3h3.png}
+    }
+    \subfigure[Bajo contraste]{
+        \includegraphics[width=0.15\textwidth]{img/t3i4.png}
+        \includegraphics[width=0.15\textwidth]{img/t3h4.png}
+    }
+\end{figure}
+
+Además, los \textbf{histogramas}, pueden representar las frecuencias de
+intensidad de los canales de color RGB.\\
+
+\textbf{\textit{Filtrado}}: Son operaciones de transformación de píxeles. En
+general se puede hablar de dos tipos de filtros:
+
+\begin{enumerate}
+    \item Filtrado en el dominio de la frecuencia. Procesan la imagen trabajando
+    sobre el dominio de la frecuencia en la Transformada de Fourirer de la
+    imagen. Hay básicamente tres tipos de filtros que pueden aplicarse en esta
+    categoría.
+
+    \begin{enumerate}
+        \item Filtro paso bajo: atenúa las frecuencias altas y mantiene sin
+        variaciones las bajas. El resultado en el dominio espacial es
+        equivalente al de un filtro de suavizado, donde las altas frecuencias
+        que son filtradas se corresponden con los cambios fuertes de intensidad.
+        Consigue reducir el ruido suavizando las transiciones existentes.
+
+        \item Filtro paso alto: atenúa las frecuencias bajas manteniendo
+        invariables las frecuencias altas. Puesto que las altas frecuencias
+        corresponden en las imágenes a cambios bruscos de densidad, este tipo de
+        filtros es usado, porque entre otras ventajas, ofrece mejoras en la
+        detección de bordes en el dominio espacial, ya que estos contienen gran
+        cantidad de dichas frecuencias. Refuerza los contrastes que se
+        encuentran en la imagen.
+
+        \item Filtro paso banda: atenúa frecuencias muy altas o muy bajas
+        manteniendo una banda de rango medio.
+    \end{enumerate}
+
+    \item Filtrado en el dominio del espacio. Las operaciones de filtrado se
+    llevan a cabo directamente sobre los píxeles de la imagen. En este proceso
+    se relaciona, para todos y cada uno de los puntos de la imagen, un conjunto
+    de píxeles próximos al píxel objetivo con la finalidad de obtener una
+    información útil. Existen varios tipos de filtros en esta categoría.
+
+    \begin{enumerate}
+        \item Filtro paso bajo (suavizamiento): utilizados para eliminar ruido o
+        detalles pequeños de poco interés puesto que sólo afecta a zonas con
+        muchos cambios. La frecuencia de corte se determina por el tamaño del
+        kernel y sus coeficientes. Se emplean diversos kernels:
+
+        \begin{itemize}
+            \item Promedio: promedio de píxeles vecinos (kernel de unos).
+            \item Media: reemplaza cada píxel por el valor medio de sus
+            contiguos.
+            \item Mediana: sustituye por el valor de la mediana de los píxeles
+            vecinos (normalmente se comporta mejor que el de promedio).
+            \item Gaussiano: aproximación a la distribución gaussiana.
+        \end{itemize}
+
+        \item Filtro paso alto (atenuamiento): intensifica los detalles, bordes
+        y cambios de alta frecuencia, mientras que atenúa las zonas de tonalidad
+        uniforme. Esto permite una mejor identificación posterior de los objetos
+        que se encuentren en la imagen, puesto que el brillo se hace mayor en
+        las zonas con frecuencias más altas, al mismo tiempo que se oscurecen
+        las zonas de frecuencias bajas. Es común la aparición de ruido tras el
+        proceso.
+
+        \item Realce de bordes por desplazamiento y diferencia: sustrae de la
+        imagen original una copia desplazada de la misma. Así, es posible
+        localizar y hacer resaltar los bordes existentes y que se quieran
+        obtener según el modelo de kernel aplicado: 
+
+        \begin{itemize}
+            \item Horizontal.
+            \item Vertical.
+            \item Diagonal.
+        \end{itemize}
+
+        \item Realce de bordes mediante Laplace: este tipo de filtros realza los
+        bordes en todas direcciones (los resultados que se obtienen pueden
+        considerarse como una ``suma'' de los obtenidos tras aplicar todos los
+        modelos del tipo anterior). En esta ocasión se trabaja con la segunda
+        derivada, que permite obtener unos mejores resultados, a pesar del
+        aumento del ruido que se produce en la imagen.
+
+        \item Resalte de bordes con gradiente direccional: empleado para
+        destacar y resaltar con mayor precisión los bordes que se localizan en
+        una dirección determinada. Trabaja con los cambios de intensidad
+        existentes entre píxeles contiguos.
+
+        \item Detección de bordes y filtros de contorno (Prewitt y Sobel): al
+        igual que los anteriores, se centra en las diferencias de intensidad que
+        se dan pixel a pixel. Son utilizados para obtener los contornos de
+        objetos y de este modo clasificar las formas existentes dentro de una
+        imagen. Este tipo de filtros requieren un menor coste computacional.
+
+        \begin{itemize}
+            \item Prewitt: $ \left[ \begin{array}{ccc}-1&-1&-1\\0&0&0\\1&1&1
+            \end{array} \right] \left[ \begin{array}{ccc}-1&0&1\\-1&0&1\\-1&0&1
+            \end{array} \right]$
+
+            \item Sobel: $ \left[ \begin{array}{ccc}-1&-2&-1\\0&0&0\\1&2&1
+            \end{array} \right] \left[ \begin{array}{ccc}-1&0&1\\-2&0&2\\-1&0&1
+            \end{array} \right]
+        \end{itemize}
+    \end{enumerate}
+\end{enumerate}
+\end{document}

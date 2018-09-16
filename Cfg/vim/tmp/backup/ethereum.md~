@@ -1,0 +1,193 @@
++++
+date = "2017-06-11T22:12:30+02:00"
+title = "Ethereum"
+tags = ["Ethereum","Cryptocurrency", "Blockchain"]
+categories = ["Cryptocurrency"]
+draft = false
+description = "Introduction to Ethereum blockchain"
+
++++
+
+Ethereum is an open blockchain platform. It's intention is to create an
+alternative protocol for building decentralized applications. It is a blockchain
+with a built-in Turing-complete programming language that allows anyone to write
+smart contracts and decentralized applications.  A blockchain is a distributed
+computing architecture where every network node executes and records the same
+transactions, which are grouped into blocks. Only one block can be added at
+a time, and every block contains a mathematical proof that verifies that it
+follows in sequence from the previous block. This technology have many
+applications, but we are going to focus in the use of Ethereum as
+cryptocurrency.
+
+Ethereum provides two ways of generating new blocks in the chain:
+
+  + __Proof of work__: it is a piece of data that is difficult to produce but
+    easy for others to verify and which satisfies certain requirements.
+    Producing a proof of work is tipically a random process with low probability
+    of success. It attempts to provide consensus in the blockchain network. In
+    case of Ethereum, this process is done through
+    [Ethash](https://github.com/ethereum/wiki/wiki/Ethash "Ethash").
+  + __Proof of stake__: it is an unworkable consensus mechanism. With this
+    paradignm the resource that is compared is the amount of assets, in this
+    case Ether, an entity holds. The creator of the next block is chosen in
+    a deterministic way based on the amount of Ether an entity owns, this means
+    that an entity with 20% of the total Ether will be more likely to generate
+    the next block that one owning only 1%. This consensus mechanisms raises the
+    _Monopoly Problem_ that is if an entity holds the majority of the resource
+    it could impose its own conditions over the system. In the case of Ethereum
+    the potocol for proof of stake will be called [Casper](
+    https://blog.ethereum.org/2015/08/01/introducing-casper-friendly-ghost/).
+
+Ethereum has been designed to go through five milestones.
+
+| Version | Code name  |   Release date  |  Consensus method  |
+|:-------:|:----------:|:---------------:|:------------------:|
+|    1    | Olympic    |    May, 2015    |   Proof of work    |
+|    2    | Frontier   |  July 30, 2015  |   Proof of work    |
+|    3    | Homestead  | March 1 4, 2016 |   Proof of work    |
+|    4    | Metropolis |       TBA       | Proof of work (?)  |
+|    5    | Serenity   |       TBA       | Proof of stake (?) |
+
+## Ethereum ecosystem
+
+Whereas the Bitcoin blockchain is purely a list of transactions, in Ethereum,
+the state is made up of objects called "accounts". The Ethereum blockchain
+tracks the state of every account, and all state transitions on the Ethereum
+blockchain are transfers of value and information between accounts. The system
+is ruled with messages operating on those accounts.
+
+### Ether
+
+Ether (Ξ or ETH) is the value token of Ethereum's blockchain, and it is used to
+pay transaction fees. It can also be seen as the cryptocurrency used within
+Ethereum. Ethereum has a metric system, each denomination has it's own unique
+name. The smallest denomination, or base unit, is called _Wei_. The whole
+denomination table is as follows:
+
+|        Unit         | Wei Value |            Wei            |
+|:-------------------:|:---------:|:-------------------------:|
+| wei                 | 1 wei     | 1                         |
+| Kwei (babbage)      | 1³ wei    | 1,000                     |
+| Mwei (lovelace)     | 1⁶ wei    | 1,000,000                 |
+| Gwei (shannon)      | 1⁹ wei    | 1,000,000,000             |
+| microether (szabo)  | 1¹² wei   | 1,000,000,000,000         |
+| milliether (finney) | 1¹⁵ wei   | 1,000,000,000,000,000     |
+| ether               | 1¹⁸ wei   | 1,000,000,000,000,000,000 |
+
+According to the terms agreed by all parties on the 2014 pre sale, issuance of
+ether is capped at 18 million ether per year (this number equals 25% of the
+initial supply). This means that while the absolute issuance is fixed, the
+relative inflation is decreased every year. In theory if this issuance was kept
+indefinitely then at some point the rate of new tokens created every year would
+reach the average amount lost yearly (by misuse, accidental key lost, death of
+holders etc) and there would reach an equilibrium.
+
+### Accounts
+
+Each account has a 20-byte address and state transitions, that are direct
+transfers between accounts. An Ethereum account has four fields:
+
+  + Nonce, counter used to make sure each transaction can only be done once.
+  + Account's current Ether balance.
+  + Account's contract code, if present.
+  + Account's storage, empty by default.
+
+There are two types of accounts:
+
+  + Externally Owned Accounts (EOA): are controlled by private keys.
+  + Contract Accounts: are controlled by their contract code and can only be
+    "activated" by an EOA.
+
+### Contracts
+
+Smart contracts are pieces of code embedded in the blockchain. Smart contracts
+refers to code inside a Contract Account. Users can create new contracts by
+deploying code to the blockchain. In a contract account, every me it receives a
+message the contract (code) is activated, allowing to read and write in the
+internal storage and/or send messages to other users in the system. Contracts
+are autonomous agents executing always the same code when triggered by a message
+or a transaction.
+
+To avoid malicious behaviours like DDoS attacks, each transaction must pay a fee
+to the system. The sender of the transaction must pay for each "step of the
+program" that the transaction executes, including computation and memory
+storage. The fundamental unit of computation is "gas"; usually, a computational
+step costs 1 gas, but some operations cost higher amounts of gas because they
+are more computationally expensive, or increase the amount of data that must be
+stored as part of the state. There is also a fee of 5 gas for every byte in the
+transaction data.
+
+### Messages
+
+The term transaction is used in Ethereum to refer to the signed data package
+that stores a message to be sent from an EOA. Transactions contain the following
+data:
+
+ + Recipient of the message.
+ + Signature identifying the sender.
+ + Amount of ETH to be transferred from the sender to the recipient.
+ + An optional data field.
+ + `STARTGAS` value, representing the maximum number of computational steps the
+   transaction execution is allowed to make.
+ + `GASPRICE` value, representing the fee that the sender pays for each
+   computational step.
+
+`STARTGAS` and `GASPRICE` fields are essential for Ethereum's anti-denial model.
+To avoid infinite loops or resource waste, the number of computational steps
+must be delimited.
+
+Contracts have the ability to send contracts to other contracts. This messages
+are never serialized so they only belong to the execution environment. A message
+contains the following fields:
+
+  + Sender of the message (Implicit).
+  + Recipient of the message.
+  + Amount of ETH to be transferred alongside the message.
+  + Optional data field.
+  + `STARTGAS` value.
+
+A contract can only send message when it is executing the code it has. This only
+happens when triggered by an EOA. Like  a transaction, a message leads to the
+recipient account running its code. Thus, contracts can have relationships with
+other contracts in exactly the same way external actors.
+
+### Ethereum virtual machine (EVM)
+
+Ethereum is a programmable blockchain, that means that the user is allowed to
+create their own operations of any complexity. EVM can execute code of an
+arbitrary complexity. Developers can create applications that run in EVM using
+programming languages like python. Each and every node of the network runs the
+EVM in order to reach consensus across the blockchain, this consensus provides
+high levels of fault tolerance, ensures zero downtime, and makes the data stored
+in the blockchain unchangeable and censorship-resistant.
+
+The code is written in a low-level, stack-based bytecode language, referred to
+as "EVM code". Each byte represents an operation and the byte stream is iterated
+in an infinite loop way until `STOP` or `RETURN` operations are found. The code
+space is divided in three areas:
+
+  + Stack: LIFO data structure that supports `pop` and `push` operations.
+  + Memory: infinitely expandable byte array.
+  + Long-term storage: key/value storage, unlikely stack and memory it persists
+    on the long term.
+
+EVM's full computational state can be defined in the tuple `(block_state,
+transaction, message, code, memory, stack, pc, gas)`.
+
+`$ \frac{1}{2} $`
+
+## References
+
+  1. [White paper](https://github.com/ethereum/wiki/wiki/White-Paper "Ethereum
+     white paper")
+  2. [Ethereum project page](https://www.ethereum.org/ "Ethereum project")
+  3. [Ethereum documentation](http://ethdocs.org "Ethereum documentation")
+  4. [Ethereum wiki](https://en.wikipedia.org/wiki/Ethereum "Ethereum wiki")
+  5. [Ether](https://www.ethereum.org/ether "Ether")
+  6. [Casper PoS](
+     https://blog.ethereum.org/2015/08/01/introducing-casper-friendly-ghost/
+     "Casper PoS")
+  7. [Gas Explained](
+     https://www.reddit.com/r/ethereum/comments/271qdz/can_someone_explain_the_concept_of_gas_in_ethereum/
+     "Gas Explained)
+  8. [Ethash](https://github.com/ethereum/wiki/wiki/Ethash "Ethash")

@@ -1,0 +1,13 @@
+{{ partial "asset.html" .}}
+{{ if ne .Site.Params.show_menu false }}
+  <nav itemscope itemtype="">
+    {{ $currentNode := . }}
+    {{ range .Site.Menus.main }}
+      {{ if eq .Name "Home" }}
+          <a itemprop="url" class="{{if or ($currentNode.IsMenuCurrent "main" .) ($currentNode.HasMenuCurrent "main" .) }}active{{end}}" href="{{ .URL }}"><span itemprop="name">{{ .Name }}</span></a>
+      {{ else }}
+          <a itemprop="url" class="{{if or ($currentNode.IsMenuCurrent "main" .) ($currentNode.HasMenuCurrent "main" .) }}active{{end}}" href="{{ .URL }}"><span itemprop="name">{{ .Name }}</span></a>
+      {{ end }}
+    {{ end }}
+  </nav>
+{{ end }}

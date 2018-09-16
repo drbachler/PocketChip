@@ -1,0 +1,38 @@
+\section{Introdicción}
+\subsection{Sistemas de control}
+
+Un \textbf{sistema de control} es un sistema (informático o no) que controla el
+comportamiento de un entorno físico determinado. Para ello realiza el siguiente
+algoritmo de manera repetitiva:
+
+\begin{enumerate}
+    \item Recibe información (mediante \textit{sensores}) del comportamiento
+    actual del entorno físico.
+
+    \item Decide que debe modificar en el entorno físico para que su
+    comportamiento sea el deseado.
+
+    \item Realiza los cambiops deseados en el entorno físico (mediante
+    \textit{actuadores}).
+\end{enumerate}
+
+El tiempo de ejecución del algoritmo es importante para conseguir un control
+efectivo y suave del entorno.
+
+\subsection{Sistemas empotrados}
+
+Se diseñan para cumplir una tarea concreta, no son de propósito general y, a
+menudo, tienen requisitos de tiempo real. No suelen ser dispositivos separados,
+se suelen integrar dentro del dispositivo que controlan. Los recursos de
+hardware (CPU, RAM, FLASH, I/O) se suelen ajustar a las necesidades. El software
+y el dispositivo se crean a la vez. El software completo de un sistema empotrado
+se llama \textit{firmware}.
+
+\subsection{Sistema de tiempo real}
+
+Un \textbf{sistema en tiempo real} es un sistema informático que cumple que:
+Para que el funcionamiento del sistema sea correcto no basta con que las
+acciones sean correctas, sino que tienen que ejecutarse dentro del intervalo de
+tiempo especificado. El tiempo en que se ejecutan las acciones del sistema es
+significativo. Gran parte de los sistemas de control son sistemas de tiempo real
+y viceversa.

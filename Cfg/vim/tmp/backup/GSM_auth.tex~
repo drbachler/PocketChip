@@ -1,0 +1,42 @@
+\begin{tikzpicture}[]
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (ms) at (0, 10) {MS};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (msc) at (4, 10) {MSC/VLR};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (hlr) at (8, 10) {HLR};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (auc) at (12, 10) {AUC};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (ax) at (0,6.25) {\tiny $RAND$ \& A3 $\rightarrow SRES$\\$k_i$ \& A8 $\rightarrow k_c$};
+
+    \node[below of=ms, node distance=5cm] (msg) {};
+    \node[below of=msc, node distance=5cm] (mscg) {};
+    \node[below of=hlr, node distance=5cm] (hlrg) {};
+    \node[below of=auc, node distance=5cm] (aucg) {};
+
+    %\node[draw, rectangle, align=center, minimum height=12em, text width=35em,
+    %    fill=blue!5, inner sep=0pt] (id) at (5,7)
+    %    {\parbox[b][11.5em]{35em}{\center \small Identification}};
+    %\node[draw, rectangle, align=center, minimum height=22em, text width=35em,
+    %    fill=green!5, inner sep=0pt] (auth) at (5,0.4)
+    %    {\parbox[b][21.5em]{35em}{\center \small Authentication}};
+
+    \draw (ms) -- (ax.90);
+    \draw (ax.270) -- (msg);
+    \draw (msc) -- (mscg);
+    \draw (hlr) -- (hlrg);
+    \draw (auc) -- (aucg);
+
+    \draw[->] (0,8.75) -- node[above, midway] {\tiny Access request (IMSI)} (4,8.75);
+    \draw[->] (4,8.5) -- node[above, midway] {\tiny Authentication request (IMSI)} (8,8.5);
+    \draw[->] (8,8.25) -- node[above, midway] {\tiny Request triplets} (12,8.25);
+    \draw[<-] (8,7.5) -- node[above, midway] {\tiny Triplets}
+        node[below, midway] {\tiny $RAND$, $XRES$, $k_c$} (12,7.5);
+    \draw[<-] (4,7.25) -- node[above, midway] {\tiny Triplets}
+        node[below, midway] {\tiny $RAND$, $XRES$, $k_c$} (8,7.25);
+    \draw[<-] (0,7) -- node[above, midway] {\tiny $RAND$} (4,7);
+
+    \draw[->] (0,5.5) -- node[above, midway] {\tiny $SRES$} (4,5.5);
+\end{tikzpicture}
+

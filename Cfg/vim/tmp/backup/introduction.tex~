@@ -1,0 +1,75 @@
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+
+More smartphones than PCs are sold over the world in a year. With this new
+situation wireless communications are one of the biggest concerns.
+
+\begin{itemize}
+    \item \textbf{\textit{Networks with infrastructure}}: they need an access
+        point (AP). Security is designed for the communication between the
+        device and the AP. It is funded on the assumption that the AP is
+        trustworthy. Some examples in the domain of cellular networks are:
+
+        \begin{itemize}
+            \item \textit{Global System for Mobile Communication} (GSM): only
+                users are authenticated, confidentiality between device and AP,
+                very weak protocols.
+
+            \item $ 3^{rd} $ \textit{Generation} (3G): mutual authentication,
+                confidentiality between device and AP, non repudiation is not
+                implemented.
+        \end{itemize}
+
+    \item \textbf{\textit{Networks without infrastructure}} (ad-hoc): the
+        devices cooperate to build up the network. Efficiency is severely
+        restricted, nodes with very different capabilities. Use of distributed
+        PKI, it depends on node availability, not compromised even if some
+        node is lost/compromised. Route discovery mechanisms are needed.
+        Neighbor confidence is built.
+
+    \item \textbf{\textit{Heterogeneous wireless networks}}: mixture between
+        networks with and without infrastructure.
+\end{itemize}
+
+\subsection*{Security Objectives}
+\addcontentsline{toc}{subsection}{Security Objectives}
+
+It is freedom from danger, risk, etc.; safety. Realistically, is a relative
+quality that expresses a balance or trade off between risks and the measures
+taken to minimize them.
+
+\begin{itemize}
+    \item Confidentiality: avoid unauthorized access. Encryption.
+
+    \item Integrity: avoid unauthorized data modification. Hash.
+
+    \item Availability: ensure access to authorized users. Authentication and
+        non-repudiation.
+\end{itemize}
+
+\textbf{Vulnerability}: weakness of an Information System that can harm the 
+company or its operations. Vulnerability appearance:
+
+\begin{itemize}
+    \item During the life cycle: incorrect security requisites (or incomplete,
+        generally during the analysis phase). Poor system design. Undetected
+        programming errors due to poor testing.
+
+    \item During operation: system deployment in an environment more hostile
+        than expected. Unsecure system configuration. System incorrect
+        administration.
+
+    \item During maintenance: not updating security patches. Poor or inadequate
+        maintenance. Addition of new functionalities that bring in new
+        vulnerabilities.
+\end{itemize}
+
+\textbf{Threat}: potential violation (accidental otherwise) of Information
+Security. Any action that can endanger the security objectives.\\
+
+\textbf{Attack}: materialization of a threat by an intelligent agent (purposeful
+action). \\
+
+\textbf{Risk}: probability that a threat materializes, exploiting a
+vulnerability and causing harm in a process or system. The non existence of
+vulnerabilities would make a system resistant to all threats (zero risk).

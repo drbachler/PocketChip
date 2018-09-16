@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+    \node[draw, rectangle, minimum height=5em, align=center, text width=5em, fill=blue!10]
+        (d) at (0,0) {iOS};
+    \node[draw, rectangle, minimum height=5em, align=center, text width=5em, fill=blue!10]
+        (s) at (12,0) {Apple Server};
+    \draw[->] (d.30) -- node[above] {\small{ECID, NONCE, h(LLB, iBoot, kernel,
+        OS image)}} (s.150);
+    \draw[<-] (d.330) -- node[above] {\small{Sign(h(LLB, iBoot, kernel, OS image))}}
+        (s.210);
+\end{tikzpicture}

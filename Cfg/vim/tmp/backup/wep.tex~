@@ -1,0 +1,28 @@
+\begin{tikzpicture}
+    \node[draw, rectangle, align=center, minimum height=3em, text width=2em]
+        (c1) at (4,4) {$ \vert \vert $};
+    \node[draw, rectangle, align=center, minimum height=3em]
+        (rc4) at (8,4) {RC4};
+
+    \node[draw, rectangle, align=center, minimum height=3em, text width=2em]
+        (c2) at (4,2) {$ \vert \vert $};
+    \node[draw, rectangle, align=center] (crc) at (1.75,1.625) {CRC - 32};
+
+    \node[] (xor) at (8,2) {$ \oplus $};
+
+    \node[draw, rectangle, align=center, text width=3em] (piv) at (11,5) {IV};
+    \node[draw, rectangle, align=center, text width=3em, minimum height=9em]
+        (ct) at (11,3) {Cipher text};
+
+    \draw[->] (0,4.375) -- node[above, xshift=-40pt] {IV (24 bits)} (c1.145);
+    \draw[->] (0,3.625) -- node[above, xshift=-40pt] {WEP key 40/104 bits} (c1.215);
+    \draw[->] (c1.0) -- node[above] {seed} (rc4.180);
+    \draw[->] (0,2.375) -- node[above, xshift=-40pt] {Plain Text} (c2. 145);
+    \draw[->] (0.5,2.375) |- (crc.180);
+    \draw[->] (crc.0) -- (c2.215);
+    \draw[->] (c2.0) -- (xor.180);
+    \draw[->] (rc4.270) -- (xor.90);
+    \draw[->] (2,4.375) |- (piv.180);
+    \draw[-] (xor.0) -| (9.5,3);
+    \draw[->] (9.5,3) -- (ct.180);
+\end{tikzpicture}

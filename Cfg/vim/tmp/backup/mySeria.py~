@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
+import serial
+
+s = serial.Serial('/dev/ttyUSB0')
+commands = [
+    'GAS: SET\n',
+    'GAS: CLR\n',
+    'BRK: SET\n',
+    'BRK: CLR\n',
+    'MIX: SET\n',
+    'MIX: CLR\n',
+    'SLP: REQ\n',
+    'SPD: REQ\n',
+    'LIT: REQ\n',
+    'LAM: SET\n',
+    'LAM: CLR\n',
+    'STP: REQ\n',
+    'DS:  REQ\n',
+    'ERR: SET\n'
+]
+
+try:
+    while True:
+        for idx, operation in enumerate(commands):
+            print ('  [%d] %s' % (idx + 1, operation[:-1]))
+
+        try:
+            option = input('Elige un mensaje: ')
+            option -= 1
+        except NameError:
+            print 'Error: eleccion no valida.'
+            continue
+        except SyntaxError:
+            print 'Error: eleccion no valida.'
+            continue
+
+        if option >= len(commands) or option < 0:
+            print 'Error: eleccion no valida.'
+            continue
+
+        print 'Written: ' + str(s.write(commands[option])) + ' Bytes'
+        print '>> ' + s.readline()
+except KeyboardInterrupt:
+    s.close()
+finally:
+    s.close()

@@ -1,0 +1,182 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
+import sqlite3
+import json
+import os
+import types
+
+class DBManager:
+    """
+    Wrapper to perform some operations in a sqlite3 database.
+
+    :attribute path: path to the data of the application, '~/.crookvault'
+    :attribute database: sqlite3 database object.
+    :attribute cursor: cursor of the database.
+    :attribute tables: memory representation, in JSON format, of the database schema.
+    """
+    def __init__(self):
+        """
+        Construct new 'DBManager' object.
+        """
+
+        self.path = os.path.expanduser('~') + '/.crookvault'
+
+        # Create app dir if it does not exist.
+        if not os.path.isdir(self.path):
+            print ("Creating application's directory in %s" % self.path)
+            os.makedirs(self.path)
+
+        self.database = sqlite3.connect(self.path + '/crookvault.db') # Open DB.
+        self.cursor = self.database.cursor() # Generate a cursor.
+
+        # Check if config file exists. Create it if not.
+        if os.path.isfile(self.path + '/config.json') == False:
+            print ('Creating configuration file at %s' % self.path + '/config.json')
+            with open(self.path + '/config.json', 'w') as configFile:
+                configFile.write('{}')
+
+            self.tables = {} # Set config as an empty dictionary.
+        else: # Get the configuration.
+            with open(self.path + '/config.json', 'r') as configFile:
+                try:
+                    configuration = json.load(configFile)
+                    self.tables = configuration['tables']
+                except KeyError:
+                    print ('ERROR: config file format error, check the file before performing more operations.')
+                    self.tables = {}
+                    return
+
+    def __modifyConfig__(self):
+        """
+        Modify the configuration file
+        """
+        # Create needed JSON string.
+        cfg = '{"tables":' + json.dumps(self.tables, indent=4, sort_keys=True) + '}'
+        # Save the changes to the config file.
+        with open(self.path + '/config.json', 'w') as configFile:
+            try:
+                configFile.write(cfg)
+            except ValueError:
+                raise ValueError
+
+    def createTable(self, tableName, description, fields, checksum, encryption, encFields):
+        """
+        Add a new table to the database.
+
+        :param tableName: name of the table to be created.
+        :param description: description of the table to be created.
+        :param fields: fields that integrate the table.
+        :param checksum: integrity algorithm if any.
+        :param encryption: encryption algorithm if any.
+        :param encFields: fields that are encrypted.
+        """
+        if tableName in self.tables: # Check if the table already exist.
+            print ('ERROR: Table name "%s" already exist!' % tableName)
+            return
+
+        if not isinstance(fields, list) or len(fields) == 0: # Check if fields declared.
+            print ('ERROR: Field list empty!')
+            return
+
+        # Check if the encrypted fields belong to the field list.
+        for field in encFields:
+            if field not in fields: # Encrypted field not in field list.
+                print ('ERROR: %s from encrypted fields not in field list.' % field)
+                return
+
+        # Modify tables object to contain the changes.
+        self.tables[tableName] = {}
+        self.tables[tableName]['description'] = description
+        self.tables[tableName]['fields'] = fields
+        self.tables[tableName]['checksum'] = checksum
+        self.tables[tableName]['encryption'] = encryption
+        self.tables[tableName]['encFields'] = encFields
+
+        attr = ''
+        for field in fields:
+            attr += field + ' text NOT NULL,'
+
+        if checksum != 'none':
+            attr += 'chk5um text NOT NULL'
+        else:
+            attr = attr[:-1] # Get rid of the last comma.
+
+        print ('CREATE TABLE IF NOT EXISTS %s (%s)' % (tableName, attr))
+        # Create table if needed.
+        self.cursor.execute('CREATE TABLE IF NOT EXISTS %s (%s)' % (tableName, attr))
+
+        # Apply changes.
+        self.database.commit()
+
+        # Modify configuration file.
+        self.__modifyConfig__()
+
+    def addEntry(self, tableName, fields):
+        """
+        Add a new entry in a table of the database.
+
+        :param tableName: name of the table to be created.
+        :param fields: fields to be inserted in the table.
+        """
+        if tableName not in self.tables: # Check if the table already exist.
+            print ('ERROR: Table name "%s" already exist!' % tableName)
+            return
+
+        if not isinstance(fields, list) or len(fields) == 0: # Check if fields declared.
+            print ('ERROR: Field list empty!')
+            return
+
+        # We obtain al the fields that integrate the table.
+        values = ''
+        for field in fields:
+            values += field + ','
+        values = values[:-1] # Get rid of the last comma.
+
+        self.cursor.execute('INSERT INTO %s VALUES(%s)' % (tableName, values))
+        self.database.commit()
+
+    def rmTable(self, tableName):
+        """
+        Remove a table from the database and from the config file.
+        """
+        self.cursor.execute('DROP TABLE IF EXISTS %s' % tableName)
+        self.database.commit()
+
+        try:
+            del self.tables[tableName]
+        except KeyError:
+            return
+
+        self.__modifyConfig__()
+
+    def queryTable( self, tableName, query):
+        """
+        Perform a query.
+        """
+        self.cursor.execute('SELECT * FROM %s' % tableName)
+        print (self.cursor.fetchall())
+
+    def getNumberOfTables(self):
+        """
+        Retreive the number of tables in the system.
+        """
+        return len(self.tables)
+
+    def checkTableName(self, tableName):
+        """
+        Check if the input table is defined in the system
+        """
+        if tableName in self.tables:
+            return True
+        else:
+            return False
+
+    def getTable(self, tableName):
+        """
+        Get structure of a table given it's name.
+        """
+        try:
+            return self.tables[tableName]
+        except KeyError:
+            return {}

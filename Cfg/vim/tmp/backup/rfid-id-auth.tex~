@@ -1,0 +1,34 @@
+\begin{tikzpicture}[]
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (r) at (0, 10) {Reader};
+    \node[draw, rectangle, align=center, minimum height=3em, text width=5em]
+        (t) at (10, 10) {Tag};
+    \node[below of=r, node distance=14cm] (rg) {};
+    \node[below of=t, node distance=14cm] (tg) {};
+
+    \node[draw, rectangle, align=center, minimum height=12em, text width=35em,
+        fill=blue!5, inner sep=0pt] (id) at (5,7)
+        {\parbox[b][11.5em]{35em}{\center \small Identification}};
+    \node[draw, rectangle, align=center, minimum height=22em, text width=35em,
+        fill=green!5, inner sep=0pt] (auth) at (5,0.4)
+        {\parbox[b][21.5em]{35em}{\center \small Authentication}};
+
+    \draw (t) -- (tg);
+    \draw (r) -- (rg);
+
+    \draw[->] (0,8.5) -- node[above, midway] {(1) Request} (10,8.5);
+    \draw[<-] (0,7.5) -- node[above, midway] {(2) RN 16} (10,7.5);
+    \draw[->] (0,6.5) -- node[above, midway] {(3) ACK RN 16} (10,6.5);
+    \draw[<-] (0,5.5) -- node[above, midway] {(4) EP, ECP, CRC16} (10,5.5);
+    \draw[->] (0,4) -- node[above, midway] {(5) Request RN (RN 16)} (10,4);
+    \draw[<-] (0,3) -- node[above, midway] {(6) Handle} (10,3);
+    \draw[->] (0,2) -- node[above, midway] {(7) Request RN (handle)} (10,2);
+    \draw[<-] (0,1) -- node[above, midway] {(8) RN 16'} (10,1);
+    \draw[->] (0,0) -- node[above, midway] {(9) PIN (16 MSB) $ \oplus $ RN 16'
+        $ \mid \mid $ handle $ \mid \mid $ CRC} (10,0);
+    \draw[->] (0,-1) -- node[above, midway] {(10) Request RN (handle)} (10,-1);
+    \draw[<-] (0,-2) -- node[above, midway] {(11) RN 16''} (10,-2);
+    \draw[->] (0,-3) -- node[above, midway] {(12) PIN (16 LSB) $ \oplus $ RN 16''
+        $ \mid \mid $ handle $ \mid \mid $ CRC} (10,-3);
+\end{tikzpicture}
+

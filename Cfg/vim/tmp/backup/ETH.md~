@@ -1,0 +1,6 @@
+# Introducción
+
+A continuación se va a explicar como crear una cadena de bloques privada usando
+el framework the Ethereum. La intención es tener nodos enteros, también
+conocidos como piscinas de minado, y nodos parciales que le envíen peticiones
+a las piscinas para generar blques.

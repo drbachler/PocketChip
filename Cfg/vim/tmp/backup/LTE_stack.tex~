@@ -1,0 +1,19 @@
+\begin{tikzpicture}[]
+    \node[] (null) at (0,5) {}; % Alinear vertical con la lista
+
+    \node[draw, rectangle, align=center, minimum height=2em, text width=7.5em]
+        (nas) at (0,0) {NAS};
+    \node[draw, rectangle, align=center, minimum height=2em, text width=7.5em,
+        below=0em of nas, node distance=1.5em] (rrc) {RRC};
+    \node[draw, rectangle, align=center, minimum height=4em, text width=6.8em,
+        below right=-2em and 0em of nas] (tcpip) {TCP/IP Stack};
+    \node[draw, rectangle, align=center, minimum height=2em, text width=15em,
+        below right=0em and -8.2em of rrc, node distance=2em] (pdcp) {PDCP};
+    \node[draw, rectangle, align=center, minimum height=2em, text width=15em,
+        below=0em of pdcp] (rlc) {RLC};
+    \node[draw, rectangle, align=center, minimum height=2em, text width=15em,
+        below=0em of rlc] (mac) {MAC};
+    \node[draw, rectangle, align=center, minimum height=2em, text width=15em,
+        below=0em of mac] (phy) {PHY};
+\end{tikzpicture}
+

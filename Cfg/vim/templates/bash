@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+#------------------------------------ DEBUG -----------------------------------#
+# Force the script to end when any of the following conditions are met:
+#   1.- (-e) A command is executed and it miserably fails.
+#   2.- (-o) A command is executed succesfully but with novelties.
+#   3.- (-u) A command tries to make use of a variable not defined beforehand.
+#   4.- (-x) Show the instruction that is currently being executed.
+
+set -eou pipefail

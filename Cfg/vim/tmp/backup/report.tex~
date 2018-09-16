@@ -1,0 +1,712 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}        % now we have tildes!
+\usepackage[spanish]{babel}        % set language of auto generated texts
+\usepackage[margin=1in]{geometry}  % set the margins to 1in on all sides
+\usepackage{graphicx}              % to include figures
+\usepackage{amsmath}               % great math stuff
+\usepackage{amsfonts}              % for blackboard bold, etc
+\usepackage{amsthm}                % better theorem environments
+\usepackage{makeidx}               % index
+\usepackage{wrapfig}
+\usepackage{enumerate}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[T1]{fontenc}
+\usepackage{forloop}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{enumitem,multicol}
+\usepackage{listings}
+\usepackage{lscape} % single landscape pages in a mainly portrait doc
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{float}
+
+\graphicspath{ {images/} }
+
+\definecolor{Brown}{cmyk}{0,0.81,1,0.60}
+\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
+\definecolor{lightlightgray}{gray}{0.9}
+
+\begin{document}
+\lstset{
+    language=Python,                        % Code langugage
+    basicstyle=\small\ttfamily,             % Code font, Examples: \footnotesize, \ttfamily
+    keywordstyle=\color{OliveGreen},        % Keywords font ('*' = uppercase)
+    commentstyle=\color{gray},              % Comments font
+    numbers=left,                           % Line nums position
+    numberstyle=\small\ttfamily,            % Line-numbers fonts
+    stepnumber=1,                           % Step between two line-numbers
+    numbersep=5pt,                          % How far are line-numbers from code
+    backgroundcolor=\color{lightlightgray}, % Choose background color
+    frame=none,                             % A frame around the code
+    tabsize=2,                              % Default tab size
+    captionpos=b,                           % Caption-position = bottom
+    breaklines=true,                        % Automatic line breaking?
+    breakatwhitespace=false,                % Automatic breaks only at whitespace?
+    showspaces=false,                       % Dont make spaces visible
+    showstringspaces=false,
+    showtabs=false,                         % Dont make tabls visible
+    morekeywords={__global__, __device__},  % CUDA specific keywords
+}
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\center
+
+\textsc{\LARGE Universidad Carlos III de Madrid}\\[1cm]
+\includegraphics[width=75mm]{uc3m-logo-cuadrado}\\[1cm]
+
+\textsc{\Large Informática Gráfica}\\[0.5cm]
+
+\HRule \\[0.7cm]
+{ \LARGE \bfseries Paseo nocturno por la travesía de la montaña}\\[0.4cm]
+\HRule \\[3.5cm]
+\begin{tabular}{rll}
+    Ignacio \textsc{Ripoll} &\texttt{100315434@alumnos.uc3m.es}\\
+    Daniel \textsc{Medina} &\texttt{daniel.m.garcia@alumnos.uc3m.es}\\
+\end{tabular}\\[3cm]
+{\large \today}
+
+%-----------------------------------------------------------------------------
+
+\vfill
+
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+\vspace*{\fill}
+
+\begin{center}
+\section*{Introducción}    
+\end{center}
+
+Como demostración de lo aprendido en el curso de Informática Gráfica, en esta 
+última práctica se ponen a funcionar de forma conjunta distintas técnicas 
+estudiadas en el mismo, en búsqueda del realismo y la estética. \\
+
+El objetivo de la práctica es componer una escena en la cual se pongan de 
+manifiesto tantas técnicas como sea posible y se considere oportuno. Para ello, 
+el equipo cuenta con la ayuda de Blender–un programa de modelado de código 
+abierto. \\
+
+El trabajo consiste en el modelado de una colina recorrida por una calle 
+asfaltada. Incluye asimismo una cubierta vegetal en la colina, un mirador en uno 
+de los giros de la calle y farolas a uno de los lados de la calle a modo de 
+iluminación. \\
+
+En este documento, a modo de memoria, se detallarán qué técnicas se incluyeron 
+en el trabajo así como qué herramientas se utilizaron para ello. Las primeras 
+secciones mostrarán las distintas técnicas y finalmente podremos observar el 
+conjunto. \\
+
+Debido a que el archivo de Blender generado ocupa 2Gb el archivo ZIP con los
+contenidos de la entrega ocupa 550Mb. Dado que AulaGlobal sólo permite entregas
+de como máximo 200Mb hemos decidido publicar el archivo en GoogleDrive. Se ha
+utilizado la cuenta habilitada por el correo universitario, de manera que solo
+integrantes de la Universidad Carlos III de Madrid puedan acceder. Para mayor
+seguridad sólo tendrán acceso aquellas personas conocedoras del enlace, que es
+el siguiente: https://drive.google.com/open?id=11NKOOLNmP340rvrcK53OjpjH6q7PRNcK
+Gracias al método empleado también se puede controlar que el archivo entregado
+se ha modificado por última vez antes de la fecha y hora final de la entrega. \\
+
+\vspace*{\fill}
+
+\newpage
+
+\section{Modelado 3D}
+
+La primera técnica a ser comentada sobre el proyecto en desarrollo es el 
+modelado. Las distintas primitivas fueron diseñadas siguiendo técnicas 
+diferentes dentro de la herramienta de Blender, como veremos a continuación. 
+
+\subsection{Colina: escultura manual}
+
+A partir de un plano paralelo al suelo, comenzamos editando la altura de la 
+colina esculpiendo manualmente el relieve en bruto de la colina con el modo
+de edición pertinente para la primitiva en cuestión. \\
+
+\begin{figure}[h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{HillFlat}
+        \caption{Plano base}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{HillSculpt}
+        \caption{Relieve en bruto}
+    \end{subfigure}
+    \caption{Modelado de la colina}
+\end{figure}
+
+
+Una vez diseñado el ``esqueleto'' de la colina, se cambió de utensilio de 
+escultura a otro más fino, a modo de lija. De esta forma conseguimos el efecto 
+de la erosión sobre el terreno, que suaviza las curvas y da una imagen más 
+homogénea. \\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.9\textwidth]{HillSmooth}
+    \caption{Suavizado del relieve}
+\end{figure}
+
+\clearpage
+\subsection{Árboles: fractales}
+
+Siguiendo nuestro trabajo en la práctica anterior, en la que modelamos un árbol 
+\textbf{fractal} de forma programática siguiendo el algoritmo del árbol de 
+Pitágoras, en este trabajo replicamos esta técnica en Blender para generar la 
+cubierta vegetal que forma parte de esta sección de modelado. \\ 
+
+\begin{figure}[h]
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Tree}
+        \caption{Modelado}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TreeMaterial}
+        \caption{Color}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TreeRender}
+        \caption{Render}
+    \end{subfigure}
+    \caption{Pasos de construir los árboles}
+\end{figure}
+
+En el anexo se puede encontrar el código en Python que es responsable de generar 
+la forma del árbol que tomamos como modelo y cuyas réplicas trasladamos por el 
+terreno de la colina y el balcón. Para un mayor realismo, aleatorizamos la 
+rotación y escala de estos árboles una vez posicionados.
+
+\clearpage
+\subsection{Calle: superficies paramétricas y extrusión}
+
+Con el objetivo de crear una forma natural de la calle, decidimos hacer uso de 
+una curva de Bézier en dos dimensiones proyectada sobre la superficie de la 
+colina. \\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.9\textwidth]{Path}
+    \caption{Camino de la calle}
+\end{figure}
+
+Aplicando un equilibrado de la superficie a lo largo del camino definido 
+paramétricamente, para que ésta se ajustase al ancho de la calle, conseguimos un 
+efecto similar a la de una obra real de ingeniería para construir un puerto de 
+montaña. \\ 
+
+\begin{figure}[h]
+    \begin{subfigure}{.5\textwidth}
+        \includegraphics[width=\textwidth]{CliffPath}
+        \caption{Calle completa}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \includegraphics[width=\textwidth]{Cliff}
+        \caption{Ejemplo de barranco}
+    \end{subfigure}
+    \caption{Equilibrado de la superficie para la calle}
+\end{figure}
+
+En las figuras se puede observar cómo que la tierra es desplazada formando 
+desfiladeros y balcones artificiales favoreciendo transiciones suaves en la 
+pendiente de la vía. \\
+
+Una vez definida la base sobre la que posicionar la calle, pasamos a definir la 
+calle como tal, i.e. el elemento o sección cuya extrusión forma la forma del 
+pavimento. De esta forma, se definió una sección de la carretera como un 
+rectángulo con una base considerablemente más grande que su altura. Mediante la 
+extrusión de esta figura de forma lineal a lo largo de la curva de Bézier 
+definida anteriormente conseguimos la forma de carretera deseada. \\
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{.78\textwidth}
+        \includegraphics[width=\textwidth]{RoadPath}
+        \caption{Total}
+    \end{subfigure}
+    \begin{subfigure}{.78\textwidth}
+        \includegraphics[width=\textwidth]{RoadPerspective}
+        \caption{Perspectiva}
+    \end{subfigure}
+    \caption{Resultado de la calle}
+\end{figure}
+
+\clearpage
+\subsection{Farolas: repetición y superficies paramétricas}
+
+El posicionamiento de las farolas a lo largo de la acera siguió un proceso 
+similar al de la extrusión de la calle mencionada en la subsección anterior. Si 
+bien seguimos tratando con curvas de Bézier (una nueva, paralela a la calle), en 
+esta ocasión hacemos uso de la repetición y no de la extrusión para situar 
+farolas a una distancia constante entre ellas. \\
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{.66\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{StreetLightEqDistance}
+        \caption{Edición}
+    \end{subfigure}
+    \begin{subfigure}{.66\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{StreetLightEqDistanceRender}
+        \caption{Render}
+    \end{subfigure}
+    \caption{Resultado de las farolas}
+\end{figure}
+
+Para ello, Blender proporciona la herramienta de repetición por \textit{frames} 
+o fotogramas, orientada a la animación, que permite la reproducción estática y 
+no dinámica si se elimina el factor de velocidad. Esta técnica será utilizada 
+también para el posicionamiento de las cámaras para la animación así como para 
+las fuentes de luz de cada farola, en las que profundizaremos en sus secciones 
+correspondientes.\\
+
+El diseño y el modelado de la primitiva como tal de este elemento se 
+externalizó, descargando un diseño gratuito de la red, debido a que consideramos 
+que el modelado manual ya estaba cubierto con otros elementos de la escena.
+
+\clearpage
+\subsection{Mirador: creación de primitivas y transformaciones}
+
+Además de los balcones artificiales creados por el simple hecho del paso de la 
+carretera, se quiso aumentar el realismo de la composición con un balcón natural 
+en forma de mirador. Basándonos en técnicas sencillas ya utilizadas en otros 
+elementos como la creación de primitivas elementales y aplicación de 
+transformaciones sobre otras primitivas, en la siguiente figura se muestra el
+proceso de creación de este balcón de forma aislada.
+
+\begin{figure}[h]
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TerraceCube}
+        \caption{Cubo base}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TerraceDecorated}
+        \caption{Árboles}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TerraceMaterial}
+        \caption{Suelo y paredes}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TerraceRender}
+        \caption{Resultado}
+    \end{subfigure}
+    \caption{Pasos de creación del balcón}
+\end{figure}
+
+\subsection{Composición de elementos}
+
+En las secciones anteriores se ha visto como se han modelado cada uno de los
+elementos de la escena a través de primitivas y funciones. La escena final es
+una composición de todos los elementos. No obstante, para la consistencia de la
+escena se han tenido que realizar modificaciones a los objetos originales.
+\begin{itemize}
+    \item \textit{Árboles fractales}: se han realizado 32 copias del árbol fractal y se
+    han distribuido a lo largo del plano $ (x, y) $. Una vez realizada la
+    distribución se han trasladado los árboles en el eje $ Z $ hasta que han
+    hecho contacto con el objeto de la colina, de esta manera se obtiene un
+    resultado más realista.
+    \item \textit{Calle}: se han hecho ajustes en al curva que definía la carretera para
+    ajustarse a las extrusiones realizadas.
+    \item \textit{Farolas}: se han hecho ajustes en al curva que definía la posición de
+    las farolas para ajustarse al trazado de la acera.
+    \item \textit{Mirador}: se ha trasladado el objeto del mirador a la posición deseada.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \includegraphics[width=\textwidth]{HillFull}
+        \caption{Sin color}
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+        \includegraphics[width=\textwidth]{HillFullMaterial}
+        \caption{Con texturas}
+    \end{subfigure}
+    \caption{Resultado de la composición}
+\end{figure}
+
+\clearpage
+\section{Texturas y color}
+
+El modelado de las figuras fue seguido de su dotación de un aspecto más natural 
+gracias a su pigmentación. En esta sección hablaremos de qué herramientas fueron 
+utilizadas para llevar a cabo este objetivo.
+
+\subsection{Mapeado de imágenes a superficies}
+
+Son ejemplos de este proceso, el más común en el proyecto, el balcón y la pradera 
+de la colina. Dadas las imágenes que mostraremos en las siguientes figuras, se 
+utilizó la herramienta \textit{uv mapping} de Blender para mostrarlas como 
+pigmentación de las superficies, acelerando el proceso de renderizado al no ser 
+parte de la forma del objeto. Se definieron materiales como \textit{Grass} y 
+\textit{PathTile} que se aplicaron a los objetos para que lucieran el aspecto 
+correspondiente a los elementos del mundo real que representan. \\
+
+\begin{figure}[h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=.6\textwidth]{leafTexture}
+        \caption{Hierba}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=.6\textwidth]{c056e6ed82ea303734aaa64e6d3452b0}
+        \caption{Balcón}
+    \end{subfigure}
+    \caption{Imágenes para las diferentes texturas}
+\end{figure}
+
+\subsection{Fondo}
+
+Por otro lado, uno de los principales problemas con los que nos encontramos 
+fueron los límites de nuestra figura. Al no poder renderizar un mundo completo, 
+sino una parte, necesitábamos un fondo para simular continuidad más allá de 
+nuestra figura. Así, de forma similar al apartado anterior, mapeamos imágenes 
+más grandes que simulasen un mundo más allá de nuestra ``isla'' modelada. En la 
+siguiente figura mostramos esas imágenes. \\
+
+\begin{figure}[h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=.7\textwidth]{back_view}
+        \caption{Lateral}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=.7\textwidth]{green_hills}
+        \caption{Superior}
+    \end{subfigure}
+    \caption{Imágenes del fondo}
+\end{figure}
+
+Si bien estas imágenes son de una escena diurna, mientras que la escena 
+representada es un atardecer, la escasa luz simula un atardecer con nubes
+al iluminar el fondo.
+
+\clearpage
+\section{Iluminación}
+
+La escena representada toma lugar, como se ha explicado en otras secciones, 
+durante un atardecer. De esta forma, quisimos enfatizar en la oscuridad con tan 
+sólo las luces de las farolas como fuentes de luminosidad. \\
+
+Para ello, se siguió la misma técnica utilizada para las farolas para posicionar 
+tantas fuentes de luz de tipo \textit{spot} como postes de luz, consiguiendo así 
+la ilusión de que cada farola tiene una bombilla en su interior. que sólo 
+ilumina en dirección descendente (hacia la calle).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{LightModel}
+    \caption{Luces de las farolas}
+\end{figure}
+
+\clearpage
+\section{Cámara y animación}
+
+El título del trabajo fue decidido con la intención de crear una animación que 
+mostrase el transcurso del paseo por la calle. De esta forma, se utilizó la 
+herramienta de repetición de las luces y las farolas con cámaras como elementos. 
+Sin embargo, esta vez sí se empleó el parámetro de velocidad, que indica la 
+cuantía de movimiento por fotograma, consiguiendo un movimiento fluido. \\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.75\textwidth]{CameraPath0}
+    \caption{Posición de cámara \#0}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.75\textwidth]{CameraPath25}
+    \caption{Posición de cámara \#25}
+\end{figure}
+
+\newpage
+Al renderizar tantos fotogramas como cámaras, estando éstas separadas 
+homogeneamente a lo largo del camino, se consigue la ilusión de movimiento
+en esta animación de \textbf{movimiento dirigido}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.75\textwidth]{CameraPath50}
+    \caption{Posición de cámara \#50}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.75\textwidth]{CameraPath75}
+    \caption{Posición de cámara \#75}
+\end{figure}
+
+\clearpage
+\newpage
+\section{Anexo I. Código de generación de árboles fractales}
+
+Para generar los árboles utilizando definiciones matemáticas se ha explotado la 
+capacidad de Blender para interpretar código en el lenguaje de programación 
+\texttt{Python}. A continuación se muestra el código utilizado para generar los 
+objetos. \\ 
+
+\begin{lstlisting}
+# Filename: l-system_tree.py
+# Author:   Benjamin N. Summerton (@def-pri-pub)
+# License:  BSD 3-Clause (read `./LICENSE` for details)
+#
+# This script is the logic for generating a Lindenmayer System tree.  It's
+# needs to be run inside of Blender for it to work.  When it's done genrating
+# you should be given a tree-like structure made out of cylinders and spheres
+
+
+import math
+import random
+import bpy
+from mathutils import Vector, Matrix
+
+
+### Configuration Options ##
+
+# Tree Characteristics
+ANGLE = 45                      # Angle which new branches come off of (in degrees)
+BRANCH_LENGTH = 10              # Length of parent branch
+BRANCH_DIVISOR = 1.6            # How much to divide parent branch length by
+THICKNESS = 0.25                # How thick the branches should be
+DEPTH = 5                       # How many levels to render
+SOFT_ENDS = True                # Add soft ends (spheres) to the branches
+
+# Twist at the A grammar
+TWIST = False                   # Twist the child branches around the parent branch
+TWIST_AMOUNT = 45               # How much to twist by
+
+# Mesh Resolution
+VERTICES = 16                   # For branches (cylinders)
+RING_COUNT = 16                 # For soft ends (spheres)
+SEGMENTS = 16                   # For soft ends (spheres)
+
+# Apply some randomness to the tree
+VARIATION_MODE = False          # apply a random variation to the tree, gives it a more natural feel
+BRANCH_LENGTH_VARIATION = .5    # How much to vary the branch length
+TWIST_VARIATION = 15            # How much to vary the twist by
+ANGLE_VARIATION = 30            # How much to vary the child branche's branch angle by
+#random.seed(0)                 # use this to set a random seed
+
+
+# class for storing render state
+class RenderParams:
+    __slots__ = (
+        'max_depth',
+        'cur_depth',
+        'branch_length',
+        'matrix_chain',
+    )
+
+    # sets up the Rendering Parameters
+    def __init__(self, branch_length=10, max_depth=5):
+        self.max_depth = max_depth
+        self.cur_depth = 0
+
+        self.branch_length = branch_length
+
+        self.matrix_chain = [Matrix.Identity(4)]
+
+
+    # Checks if we are deeper than our current depth or not
+    def depthGood(self):
+        return self.cur_depth < self.max_depth
+
+    
+    # Multiplies the stored matrx_chain
+    def computedMatrixChain(self):
+        m = self.matrix_chain[0]
+    
+        for i in range(1, len(self.matrix_chain)):
+            m *= self.matrix_chain[i]
+    
+        return m
+
+
+# This is used so that we don't accidentally add more sphere than we need to
+_soft_ends_set = set()
+
+
+# Makes a branch
+#   branch_length -- a non-negative number, how long each branch should be
+#   world_matrix -- A Matrix that will be where the placement of the branch starts
+def mkBranch(branch_length, world_matrix):
+    global _soft_ends_set
+
+    # For the endpoints
+    if SOFT_ENDS:
+        # compute locations
+        a = world_matrix
+        b = world_matrix * Matrix.Translation((0, 0, branch_length))
+
+        # Get their tranlations (fronzen) (so we don't double add them)
+        a_loc = a.to_translation().freeze()
+        b_loc = b.to_translation().freeze()
+
+        # first endpoint
+        if a_loc not in _soft_ends_set:
+            _soft_ends_set.add(a_loc)
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=SEGMENTS, ring_count=RING_COUNT, size=THICKNESS)
+            bpy.context.active_object.matrix_world *= a
+
+        # second
+        if b_loc not in _soft_ends_set:
+            _soft_ends_set.add(b_loc)
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=SEGMENTS, ring_count=RING_COUNT, size=THICKNESS)
+            bpy.context.active_object.matrix_world *= b
+
+    # The actual branch
+    mid = world_matrix * Matrix.Translation((0, 0, branch_length / 2))
+    cylinder = bpy.ops.mesh.primitive_cylinder_add(
+        vertices=VERTICES,
+        radius=THICKNESS,
+        depth=branch_length,
+    )
+    bpy.context.active_object.matrix_world *= mid
+
+
+# Grammar
+# A -> BCDE
+# B -> A
+# C -> A
+# D -> A
+# E -> A
+
+# (All these are in the context of having a max render depth
+# A = Go forward x units, perform B & C,  then back x units
+# B = Turn left 45 degrees, perform A, then turn right 45 degrees
+# C = Turn right 45 degrees, perform A, then turn left 45 degrees
+
+
+# A - BCDE
+def A(rp):
+    # Check depth
+    if not rp.depthGood():
+        return
+
+    # Record the amounts
+    original_branch_length = rp.branch_length
+    branch_length = rp.branch_length
+    twist_amount = TWIST_AMOUNT
+
+    # If variations are on, apply some
+    if VARIATION_MODE:
+        branch_length += random.uniform(-BRANCH_LENGTH_VARIATION, BRANCH_LENGTH_VARIATION)
+        twist_amount += random.uniform(-TWIST_VARIATION, TWIST_VARIATION)
+
+    # Make the branch
+    mkBranch(branch_length, rp.computedMatrixChain())
+
+    # Increase distance & twist
+    rp.matrix_chain.append(Matrix.Translation((0, 0, branch_length)))
+    if TWIST:
+        rp.matrix_chain.append(Matrix.Rotation(math.radians(twist_amount), 4, 'Z'))
+    rp.branch_length = branch_length / BRANCH_DIVISOR
+
+    # Do the other grammars
+    rp.cur_depth += 1
+    B(rp)
+    C(rp)
+    D(rp)
+    E(rp)
+    rp.cur_depth -= 1
+
+    # undo distance increase and twist
+    rp.branch_length = original_branch_length
+    if TWIST:
+        rp.matrix_chain.pop()
+    rp.matrix_chain.pop()
+
+
+# B -> A
+def B(rp):
+    # Check depth
+    if not rp.depthGood():
+        return
+    
+    # Set the angle
+    angle = ANGLE
+    if VARIATION_MODE:
+        angle += random.uniform(-ANGLE_VARIATION, ANGLE_VARIATION)
+
+    # Rotate & go deeper
+    rp.matrix_chain.append(Matrix.Rotation(math.radians(angle), 4, 'X'))
+    A(rp)
+    rp.matrix_chain.pop()
+
+
+# C -> A
+def C(rp):
+    # Check depth
+    if not rp.depthGood():
+        return
+    
+    # Set the angle
+    angle = ANGLE
+    if VARIATION_MODE:
+        angle += random.uniform(-ANGLE_VARIATION, ANGLE_VARIATION)
+
+    # Rotate & go deeper
+    rp.matrix_chain.append(Matrix.Rotation(math.radians(angle), 4, 'Y'))
+    A(rp)
+    rp.matrix_chain.pop()
+
+
+# D -> A
+def D(rp):
+    # check depth
+    if not rp.depthGood():
+        return
+    
+    # Set the angle
+    angle = ANGLE
+    if VARIATION_MODE:
+        angle += random.uniform(-ANGLE_VARIATION, ANGLE_VARIATION)
+
+    # Rotate & go deeper
+    rp.matrix_chain.append(Matrix.Rotation(math.radians(-angle), 4, 'X'))
+    A(rp)
+    rp.matrix_chain.pop()
+
+
+# E -> A
+def E(rp):
+    # check depth
+    if not rp.depthGood():
+        return
+    
+    # Set the angle
+    angle = ANGLE
+    if VARIATION_MODE:
+        angle += random.uniform(-ANGLE_VARIATION, ANGLE_VARIATION)
+
+    # Rotate & go deeper
+    rp.matrix_chain.append(Matrix.Rotation(math.radians(-angle), 4, 'Y'))
+    A(rp)
+    rp.matrix_chain.pop()
+
+
+# render something
+rp = RenderParams(BRANCH_LENGTH, DEPTH)
+A(rp)
+\end{lstlisting}
+
+\end{document}

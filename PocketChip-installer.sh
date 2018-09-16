@@ -9,7 +9,7 @@
 
 set -eou pipefail
 
-TMP_INSTALL_DIR = $HOME/install_tmp
+TMP_INSTALL_DIR=$HOME/install_tmp
 
 # Function declaration.
 function local_sources() {
@@ -129,6 +129,8 @@ cd st
 sed -i 's/Liberation Mono/Monospace/g' config.def.h
 sed -i 's/pixelsize=12/pixelsize=10/g' config.def.h 
 sed -i 's/\/bin\/sh/\/bin\/bash/g' config.def.h
+sed -i 's/cols = 80/cols = 100/g' config.def.h
+sed -i 's/rows = 24/rows = 30/g' config.def.h
 sudo make clean install
 cd $HOME
 
